@@ -132,8 +132,12 @@ def runCode(sub):
                 result = res
     else:
         inputs.append(sub.custominput)
-        errors.append(readFile(f"/tmp/{sub.id}/out/err0.txt"))
         outputs.append(readFile(f"/tmp/{sub.id}/out/out0.txt"))
+        errors.append(readFile(f"/tmp/{sub.id}/out/err0.txt"))
+        if(inputs[0]  != None): inputs[0] =  inputs[0].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        if(outputs[0] != None):outputs[0] = outputs[0].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        if(errors[0]  != None): errors[0] =  errors[0].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        
         answers.append("")
         res = readFile(f"/tmp/{sub.id}/out/result0.txt")
         if res == None:
