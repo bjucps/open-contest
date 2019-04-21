@@ -93,7 +93,8 @@ class Submission:
                     "compile":   self.compile,
                     "results":   self.results
                 }
-            return {
+            if(self.type == "custom"):
+                return {
                 "id":        self.id,
                 "user":      self.user.id,
                 "problem":   self.problem.id,
@@ -102,12 +103,31 @@ class Submission:
                 "code":      self.code,
                 "type":      self.type,
                 "results":   self.results,
-                "inputs":    self.inputs[:self.problem.samples],
-                "outputs":   self.outputs[:self.problem.samples],
-                "errors":    self.errors[:self.problem.samples],
-                "answers":   self.answers[:self.problem.samples],
-                "result":    self.result
-            }
+                "inputs":    self.inputs,
+                "outputs":   self.outputs,
+                "errors":    self.errors,
+                "answers":   self.answers,
+                "result":    self.result,
+                "status":    self.status
+                }
+            
+            else:
+                return {
+                    "id":        self.id,
+                    "user":      self.user.id,
+                    "problem":   self.problem.id,
+                    "timestamp": self.timestamp,
+                    "language":  self.language,
+                    "code":      self.code,
+                    "type":      self.type,
+                    "results":   self.results,
+                    "inputs":    self.inputs[:self.problem.samples],
+                    "outputs":   self.outputs[:self.problem.samples],
+                    "errors":    self.errors[:self.problem.samples],
+                    "answers":   self.answers[:self.problem.samples],
+                    "result":    self.result,
+                    "status":    self.status
+                }
 
     def forEach(callback: callable):
         with lock.gen_rlock():
