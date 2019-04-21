@@ -217,7 +217,7 @@ def contestreport(params, user):
                 outproblems.append(h.td(f""))
             
         deatiledContestDisplay.append(h.tr(
-            h.td(person["rank"], cls="center"),
+            h.td(person["rank"]),
             h.td(person["name"]),
             h.td(person["name"]) if start  <= time.time() <=  end else "",
             h.td(person["solved"]),
