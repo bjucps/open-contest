@@ -7,22 +7,6 @@
 /*--------------------------------------------------------------------------------------------------
 General page code
 --------------------------------------------------------------------------------------------------*/
-    // Convert date string to Date object
-    function parseDateTime(strDate, strTime) {
-        var date = new Date(`${strDate}T${strTime}Z`);
-        return date.getTime() + (date.getTimezoneOffset() * 60000);
-    }
-
-    // Convert Date object to string with date portion
-    function formatDate(date) {
-        return `${date.getFullYear()}-${fix(date.getMonth() + 1)}-${fix(date.getDate())}`;
-    }
-
-    // Convert Date object to string with time portion
-    function formatTime(time) {
-        return `${fix(time.getHours())}:${fix(time.getMinutes())}`
-    }
-
     // from https://www.quirksmode.org/js/cookies.html
     function readCookie(name) {
         var nameEQ = name + "=";
@@ -431,16 +415,11 @@ Contest page
         var endDate = $("#contest-end-date").val();
         var endTime = $("#contest-end-time").val();
         var scoreboardOffTime = $("#scoreboard-off-time").val();
-
-
-        // Invalid DATE format; "T" after the date and "Z" after the time have been inserted 
-        // for the correct format for creating the Dates, then the milliseconds are adjusted 
-        // for the correct time zone for each of the following variables, since "Z" assumes you
-        // are entering a UTC time.
-
-        var start = parseDateTime(startDate, startTime);
-        var end = parseDateTime(endDate, endTime);
-        var endScoreboard = parseDateTime(endDate, scoreboardOffTime);
+        var tieBreaker = $("#scoreboard-tie-breaker").val();
+        console.log("HI");
+        var start = new Date(`${startDate} ${startTime}`).getTime();
+        var end = new Date(`${endDate} ${endTime}`).getTime();
+        var endScoreboard = new Date(`${endDate} ${scoreboardOffTime}`).getTime();
 
         if (end <= start) {
             alert("The end of the contest must be after the start.");
@@ -467,8 +446,8 @@ Contest page
         if (newProblem != undefined) {
             problems.push(newProblem);
         }
-
-        $.post("/editContest", {id: id, name: name, start: start, end: end, scoreboardOff: endScoreboard, problems: JSON.stringify(problems)}, id => {
+        console.log(tieBreaker);
+        $.post("/editContest", {id: id, name: name, start: start, end: end, scoreboardOff: endScoreboard, tieBreaker: tieBreaker.toString(), problems: JSON.stringify(problems)}, id => {
             if (window.location.pathname == "/contests/new") {
                 window.location = `/contests/${id}`;
             } else {
@@ -488,15 +467,15 @@ Contest page
     var problemsHere = {};
     function setupContestPage() {
         var start = new Date(parseInt($("#start").val()));
-        $("#contest-start-date").val(formatDate(start));
-        $("#contest-start-time").val(formatTime(start));
+        $("#contest-start-date").val(`${start.getFullYear()}-${fix(start.getMonth() + 1)}-${fix(start.getDate())}`);
+        $("#contest-start-time").val(`${fix(start.getHours())}:${fix(start.getMinutes())}`);
         
         var end = new Date(parseInt($("#end").val()));
-        $("#contest-end-date").val(formatDate(end));
-        $("#contest-end-time").val(formatTime(end));
+        $("#contest-end-date").val(`${end.getFullYear()}-${fix(end.getMonth() + 1)}-${fix(end.getDate())}`);
+        $("#contest-end-time").val(`${fix(end.getHours())}:${fix(end.getMinutes())}`);
 
         var endScoreboard = new Date(parseInt($("#scoreboardOff").val()));
-        $("#scoreboard-off-time").val(formatTime(endScoreboard));
+        $("#scoreboard-off-time").val(`${fix(endScoreboard.getHours())}:${fix(endScoreboard.getMinutes())}`);
 
         $("div.problem-cards").sortable({
             placeholder: "ui-state-highlight",
@@ -619,7 +598,7 @@ General
 --------------------------------------------------------------------------------------------------*/
     async function fixFormatting() {
         $(".time-format").each((_, span) => {
-            var timestamp = $(span).text();
+            var timestamp = $(span).attr("data_timestamp");
             var d = new Date(parseInt(timestamp));
             $(span).text(d.toLocaleString());
         });
