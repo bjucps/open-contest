@@ -69,7 +69,7 @@ def editProblem(params, user):
                     ]),
                 ]),
                 div(cls="align-right col-12", contents=[
-                    h.button("Save", cls="button", onclick="editProblem()")
+                    h.button("Save", cls="button", onclick="editProblem(undefined,1)")
                 ])
             ])),
             Modal(
@@ -128,7 +128,7 @@ def editProblem(params, user):
                     ]),
                 ]),
                 div(cls="align-right col-12", contents=[
-                    h.button("Save", cls="button", onclick="editProblem()")
+                    h.button("Save", cls="button", onclick="editProblem(undefined,0)")
                 ])
             ])),
             Modal(
@@ -183,7 +183,7 @@ def newProblem(params, user):
                 ]),
             ]),
             div(cls="align-right col-12", contents=[
-                h.button("Save", cls="button", onclick="editProblem()")
+                h.button("Save", cls="button", onclick="editProblem(undefined,0)")
             ])
           ]))
     )

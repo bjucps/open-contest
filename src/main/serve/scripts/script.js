@@ -562,8 +562,7 @@ Problem page
         var id = $("#prob-id").val();
         var problem = {id: id};
         problem.title       = $("#problem-title").val();
-        problem.description = $("#problem-description").val();
-
+        problem.description = $("#problem-description").val();        
         if(info === 0){
             problem.statement   = mdEditors[0].value();
             problem.input       = mdEditors[1].value();
