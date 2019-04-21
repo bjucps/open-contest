@@ -71,6 +71,8 @@ def runCode(sub):
             shutil.copyfile(f"/db/problems/{prob.id}/input/in{i}.txt", f"/tmp/{sub.id}/in{i}.txt") 
     else:
         with open(f"/tmp/{sub.id}/in0.txt", "w") as text_file:
+            if(sub.custominput == None):
+                sub.custominput = ""
             text_file.write(sub.custominput)    
 
 
@@ -87,7 +89,7 @@ def runCode(sub):
     errors = []
     results = []
     result = "ok"
-    
+
     if sub.type != "custom":
         for i in range(tests):
             inputs.append(sub.problem.testData[i].input)
@@ -122,8 +124,7 @@ def runCode(sub):
                     res = "incomplete_output"
             if res == None:
                 res = "tle"
-            if sub.type == "custom":
-                res = "ok"
+            
             results.append(res)
 
             # Make result the first incorrect result
@@ -134,15 +135,15 @@ def runCode(sub):
         errors.append(readFile(f"/tmp/{sub.id}/out/err0.txt"))
         outputs.append(readFile(f"/tmp/{sub.id}/out/out0.txt"))
         answers.append("")
-        
-        result = "ok"
-        res    = "ok"
+        res = readFile(f"/tmp/{sub.id}/out/result0.txt")
+        if res == None:
+            res = "tle"
+        if res != "ok" and result == "ok":
+            result = res
         results.append(res)
 
             
             
-
-
     sub.result = result    
     if(sub.result == "tle" or sub.result == "runtime_error" or sub.result == "ok"):
         sub.status = "judged"
