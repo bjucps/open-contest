@@ -433,7 +433,7 @@ Contest page
         var endDate = $("#contest-end-date").val();
         var endTime = $("#contest-end-time").val();
         var scoreboardOffTime = $("#scoreboard-off-time").val();
-
+        var tieBreaker = $("#scoreboard-tie-breaker").val();
 
         // Invalid DATE format; "T" after the date and "Z" after the time have been inserted 
         // for the correct format for creating the Dates, then the milliseconds are adjusted 
@@ -470,7 +470,7 @@ Contest page
             problems.push(newProblem);
         }
 
-        $.post("/editContest", {id: id, name: name, start: start, end: end, scoreboardOff: endScoreboard, problems: JSON.stringify(problems)}, id => {
+        $.post("/editContest", {id: id, name: name, start: start, end: end, scoreboardOff: endScoreboard, tieBreaker: tieBreaker.toString(), problems: JSON.stringify(problems)}, id => {
             if (window.location.pathname == "/contests/new") {
                 window.location = `/contests/${id}`;
             } else {
@@ -720,4 +720,32 @@ Judging Page
             $(".rejudge").removeClass("button-gray");
             alert(`New Result: ${verdict_name[data]}`);
         });
+    }
+
+    function getDiff(output, answer) {
+
+
+        let color = '',
+        span = '';
+
+        outArr = output.split("\n");
+        ansArr = answer.split("\n");
+
+        let diff = Diff.diffArrays(ansArr, outArr),
+            fragment = "";
+
+        diff.forEach(function(part){{
+        // green for additions, red for deletions
+        // grey for common parts
+            color = part.added ? 'darkgreen' :
+                part.removed ? 'darkred' : 'dimgrey';
+            bgcolor = (color == 'darkgreen') ? ';background-color:palegreen' :
+                (color == 'darkred') ? ';background-color:#F6B0B0' : ''
+            part.value.forEach(function(item) {
+                span = '<div style="color:{0}{1}">{2}<br/></div>'.replace("{0}", color).replace("{1}", bgcolor).replace("{2}", item.replace(/ /g, "&nbsp;"));
+                fragment += span;
+            });
+        }});
+        return fragment;
+            
     }
