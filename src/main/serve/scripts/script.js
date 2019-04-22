@@ -7,6 +7,22 @@
 /*--------------------------------------------------------------------------------------------------
 General page code
 --------------------------------------------------------------------------------------------------*/
+    // Convert date string to Date object
+    function parseDateTime(strDate, strTime) {
+        var date = new Date(`${strDate}T${strTime}Z`);
+        return date.getTime() + (date.getTimezoneOffset() * 60000);
+    }
+
+    // Convert Date object to string with date portion
+    function formatDate(date) {
+        return `${date.getFullYear()}-${fix(date.getMonth() + 1)}-${fix(date.getDate())}`;
+    }
+
+    // Convert Date object to string with time portion
+    function formatTime(time) {
+        return `${fix(time.getHours())}:${fix(time.getMinutes())}`
+    }
+
     // from https://www.quirksmode.org/js/cookies.html
     function readCookie(name) {
         var nameEQ = name + "=";
@@ -416,7 +432,7 @@ Contest page
         var endTime = $("#contest-end-time").val();
         var scoreboardOffTime = $("#scoreboard-off-time").val();
         var tieBreaker = $("#scoreboard-tie-breaker").val();
-        console.log("HI");
+
         var start = new Date(`${startDate} ${startTime}`).getTime();
         var end = new Date(`${endDate} ${endTime}`).getTime();
         var endScoreboard = new Date(`${endDate} ${scoreboardOffTime}`).getTime();
@@ -467,15 +483,15 @@ Contest page
     var problemsHere = {};
     function setupContestPage() {
         var start = new Date(parseInt($("#start").val()));
-        $("#contest-start-date").val(`${start.getFullYear()}-${fix(start.getMonth() + 1)}-${fix(start.getDate())}`);
-        $("#contest-start-time").val(`${fix(start.getHours())}:${fix(start.getMinutes())}`);
+        $("#contest-start-date").val(formatDate(start));
+        $("#contest-start-time").val(formatTime(start));
         
         var end = new Date(parseInt($("#end").val()));
-        $("#contest-end-date").val(`${end.getFullYear()}-${fix(end.getMonth() + 1)}-${fix(end.getDate())}`);
-        $("#contest-end-time").val(`${fix(end.getHours())}:${fix(end.getMinutes())}`);
+        $("#contest-end-date").val(formatDate(end));
+        $("#contest-end-time").val(formatTime(end));
 
         var endScoreboard = new Date(parseInt($("#scoreboardOff").val()));
-        $("#scoreboard-off-time").val(`${fix(endScoreboard.getHours())}:${fix(endScoreboard.getMinutes())}`);
+        $("#scoreboard-off-time").val(formatTime(endScoreboard));
 
         $("div.problem-cards").sortable({
             placeholder: "ui-state-highlight",
@@ -598,7 +614,7 @@ General
 --------------------------------------------------------------------------------------------------*/
     async function fixFormatting() {
         $(".time-format").each((_, span) => {
-            var timestamp = $(span).attr("data_timestamp");
+            var timestamp = $(span).text();
             var d = new Date(parseInt(timestamp));
             $(span).text(d.toLocaleString());
         });

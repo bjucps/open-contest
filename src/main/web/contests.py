@@ -10,7 +10,7 @@ def deleteContest(params, setHeader, user):
 def editContest(params, setHeader, user):
     id = params.get("id")
     contest = Contest.get(id) or Contest()
-    print("HELLLLLO")
+
     contest.name     = params["name"]
     contest.start    = int(params["start"])
     contest.end      = int(params["end"])
