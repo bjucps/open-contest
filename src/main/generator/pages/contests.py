@@ -8,9 +8,9 @@ class ContestCard(UIElement):
     def __init__(self, contest: Contest):
         self.html = Card(contest.name, 
             div(
-                h.span(contest.start, cls='time-format', data_timestamp=contest.start),
+                h.span(contest.start, cls='time-format'),
                 " - ",
-                h.span(contest.end, cls='time-format', data_timestamp=contest.end)
+                h.span(contest.end, cls='time-format')
             ),
             link=f"/contests/{contest.id}",
             delete=f"deleteContest('{contest.id}')",
@@ -40,7 +40,7 @@ def editContest(params, user):
     existingProblems = []
     start = time.time() * 1000
     end = (time.time() + 3600) * 1000
-    scoreboardOff = (time.time() + 2700) * 1000
+    scoreboardOff = end
     if contest:
         title = contest.name
         start = contest.start

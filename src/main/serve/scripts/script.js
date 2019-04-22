@@ -438,9 +438,9 @@ Contest page
         // for the correct time zone for each of the following variables, since "Z" assumes you
         // are entering a UTC time.
 
-        var start = new Date(`${startDate} ${startTime}`).getTime();
-        var end = new Date(`${endDate} ${endTime}`).getTime();
-        var endScoreboard = new Date(`${endDate} ${scoreboardOffTime}`).getTime();
+        var start = parseDateTime(startDate, startTime);
+        var end = parseDateTime(endDate, endTime);
+        var endScoreboard = parseDateTime(endDate, scoreboardOffTime);
 
         if (end <= start) {
             alert("The end of the contest must be after the start.");
