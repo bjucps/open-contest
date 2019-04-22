@@ -433,6 +433,11 @@ Contest page
         var scoreboardOffTime = $("#scoreboard-off-time").val();
         var tieBreaker = $("#scoreboard-tie-breaker").val();
 
+        // Invalid DATE format; "T" after the date and "Z" after the time have been inserted 
+        // for the correct format for creating the Dates, then the milliseconds are adjusted 
+        // for the correct time zone for each of the following variables, since "Z" assumes you
+        // are entering a UTC time.
+
         var start = new Date(`${startDate} ${startTime}`).getTime();
         var end = new Date(`${endDate} ${endTime}`).getTime();
         var endScoreboard = new Date(`${endDate} ${scoreboardOffTime}`).getTime();
@@ -462,7 +467,7 @@ Contest page
         if (newProblem != undefined) {
             problems.push(newProblem);
         }
-        console.log(tieBreaker);
+
         $.post("/editContest", {id: id, name: name, start: start, end: end, scoreboardOff: endScoreboard, tieBreaker: tieBreaker.toString(), problems: JSON.stringify(problems)}, id => {
             if (window.location.pathname == "/contests/new") {
                 window.location = `/contests/${id}`;
