@@ -115,13 +115,13 @@ def runCode(sub):
             outstrip = strip((outputs[-1] or "").rstrip()).splitlines()
 
             res = readFile(f"/tmp/{sub.id}/out/result{i}.txt")
-                if res == "ok" and strip((answers[-1] or "").rstrip()) != strip((outputs[-1] or "").rstrip()):
-                    if compareStrings(strip((outputs[-1] or "").rstrip()), strip((answers[-1] or "").rstrip())):
-                        res = "incomplete_output"
-                    elif compareStrings(strip((answers[-1] or "").rstrip()), strip((outputs[-1] or "").rstrip())):
-                        res = "extra_output"
-                    else:
-                        res = "wrong_answer"
+            if res == "ok" and strip((answers[-1] or "").rstrip()) != strip((outputs[-1] or "").rstrip()):
+                if compareStrings(strip((outputs[-1] or "").rstrip()), strip((answers[-1] or "").rstrip())):
+                    res = "incomplete_output"
+                elif compareStrings(strip((answers[-1] or "").rstrip()), strip((outputs[-1] or "").rstrip())):
+                    res = "extra_output"
+                else:
+                    res = "wrong_answer"
             if res == None:
                 res = "tle"
             
