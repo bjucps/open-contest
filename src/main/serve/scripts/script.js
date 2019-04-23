@@ -41,10 +41,12 @@ General page code
         });
     }
 
+    var userLoginTime = 0;
     var userType = "";
     var user = "";
     function setupMenu() {
         if (document.cookie) {
+            userLoginTime = Number(readCookie("userLoginTime"));
             userType = readCookie("userType");
             user = readCookie("user");
         }
@@ -193,15 +195,22 @@ Problem page
                 <h3>Compile Error</h3>
                 <code>${sub.compile.replace(/\n/g, "<br/>").replace(/ /g, "&nbsp;")}</code>
             `);
-        } else if (sub.type == "test") {
+        } else if (sub.type == "test" || sub.type == "custom") {
             var tabs = "";
             var results = "";
             var samples = sub.results.length;
+            if(sub.type == "custom"){
+                samples = 1;
+            }
             for (var i = 0; i < samples; i ++) {
                 var res = sub.results[i];
                 var icon = icons[res];
-                tabs += `<li><a href="#tabs-${i}"><i class="fa fa-${icon}" title="${verdict_name[res]}"></i> Sample #${i}</a></li>`;
-
+                if (sub.type ==  "test"){
+                    tabs += `<li><a href="#tabs-${i}"><i class="fa fa-${icon}" title="${verdict_name[res]}"></i> Sample #${i}</a></li>`;
+                }
+                if(sub.type == "custom"){
+                    tabs += `<li><a href="#tabs-${i}"><i class="fa fa-${icon}" title="${verdict_name[res]}"></i> Custom </a></li>`;
+                }
                 var input = sub.inputs[i];
                 var output = sub.outputs[i];
                 var error = sub.errors[i];
@@ -213,7 +222,8 @@ Problem page
                 if (!error) {
                     errorStr = "";
                 }
-                results += `<div id="tabs-${i}">
+                if (sub.type ==  "test"){
+                    results += `<div id="tabs-${i}">
                     <div class="row">
                         <div class="col-12">
                             <h4>Input</h4>
@@ -230,6 +240,23 @@ Problem page
                         ${errorStr}
                     </div>
                 </div>`;
+                }
+                if(sub.type == "custom"){
+                    results += `<div id="tabs-${i}">
+                    <div class="row">
+                        <div class="col-12">
+                            <h4>Your Input</h4>
+                            <code>${input.replace(/\n/g, "<br/>").replace(/ /g, "&nbsp;")}</code>
+                        </div>
+                        <div class="col-12">
+                            <h4>Your Output</h4>
+                            <code>${output.replace(/\n/g, "<br/>").replace(/ /g, "&nbsp;")}</code>
+                        </div>
+                        ${errorStr}
+                    </div>
+                </div>`;
+                }
+                
             }
             $(".results.card .card-contents").html(`<div id="result-tabs">
                 <ul>
@@ -292,6 +319,9 @@ Problem page
             $(".submit-problem").addClass("button-gray");
             $(".test-samples").attr("disabled", true);
             $(".test-samples").addClass("button-gray");
+            $(".test-custom").attr("disabled", true);
+            $(".test-custom").addClass("button-gray");
+            
         }
 
         function enableButtons() {
@@ -299,6 +329,8 @@ Problem page
             $(".submit-problem").removeClass("button-gray");
             $(".test-samples").attr("disabled", false);
             $(".test-samples").removeClass("button-gray");
+            $(".test-custom").attr("disabled", false);
+            $(".test-custom").removeClass("button-gray");
         }
 
         // When you click the submit button, submit the code to the server
@@ -318,6 +350,18 @@ Problem page
             var code = editor.getValue();
             disableButtons();
             $.post("/submit", {problem: thisProblem, language: language, code: code, type: "test"}, results => {
+                enableButtons();
+                showResults(results);
+            });
+        });
+
+        // When you click the test custom input code button, test the code with custom input
+        $("button.test-custom").click(_ => {
+            createResultsCard();
+            var code = editor.getValue();
+            var input = $("#custom-input").val();
+            disableButtons();
+            $.post("/submit", {problem: thisProblem, language: language, code: code, type: "custom", input:input}, results => {
                 enableButtons();
                 showResults(results);
             });
@@ -431,7 +475,7 @@ Contest page
         var endDate = $("#contest-end-date").val();
         var endTime = $("#contest-end-time").val();
         var scoreboardOffTime = $("#scoreboard-off-time").val();
-
+        var tieBreaker = $("#scoreboard-tie-breaker").val();
 
         // Invalid DATE format; "T" after the date and "Z" after the time have been inserted 
         // for the correct format for creating the Dates, then the milliseconds are adjusted 
@@ -468,7 +512,7 @@ Contest page
             problems.push(newProblem);
         }
 
-        $.post("/editContest", {id: id, name: name, start: start, end: end, scoreboardOff: endScoreboard, problems: JSON.stringify(problems)}, id => {
+        $.post("/editContest", {id: id, name: name, start: start, end: end, scoreboardOff: endScoreboard, tieBreaker: tieBreaker.toString(), problems: JSON.stringify(problems)}, id => {
             if (window.location.pathname == "/contests/new") {
                 window.location = `/contests/${id}`;
             } else {
@@ -675,7 +719,7 @@ Messages Page
         $.post("/getMessages", {timestamp: lastChecked}, messages => {
             lastChecked = messages.timestamp
             for (message of messages.messages) {
-                if (message.id in seenMessages || message.from.id == user) {
+                if (message.id in seenMessages || message.from.id == user || message.timestamp < userLoginTime) {
                     continue;
                 }
                 showIncomingMessage(message);
@@ -718,4 +762,32 @@ Judging Page
             $(".rejudge").removeClass("button-gray");
             alert(`New Result: ${verdict_name[data]}`);
         });
+    }
+
+    function getDiff(output, answer) {
+
+
+        let color = '',
+        span = '';
+
+        outArr = output.split("\n");
+        ansArr = answer.split("\n");
+
+        let diff = Diff.diffArrays(ansArr, outArr),
+            fragment = "";
+
+        diff.forEach(function(part){{
+        // green for additions, red for deletions
+        // grey for common parts
+            color = part.added ? 'darkgreen' :
+                part.removed ? 'darkred' : 'dimgrey';
+            bgcolor = (color == 'darkgreen') ? ';background-color:palegreen' :
+                (color == 'darkred') ? ';background-color:#F6B0B0' : ''
+            part.value.forEach(function(item) {
+                span = '<div style="color:{0}{1}">{2}<br/></div>'.replace("{0}", color).replace("{1}", bgcolor).replace("{2}", item.replace(/ /g, "&nbsp;"));
+                fragment += span;
+            });
+        }});
+        return fragment;
+            
     }

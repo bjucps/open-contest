@@ -286,7 +286,7 @@ def contestreport(params, user):
 def score(submissions: list, contestStart, problemSummary) -> tuple:
     """ Given a list of submissions by a particular user, calculate that user's score.
         Calculates score in ACM format. """
-    
+    contest = Contest.getCurrent() or Contest.getPast()
     solvedProbs = 0
     sampleProbs = 0
     penPoints = 0
@@ -336,7 +336,7 @@ def score(submissions: list, contestStart, problemSummary) -> tuple:
             solvedProbs += 1
             penPoints += points
             problemSummary[sub.problem.id][1] += 1
-        elif sampleSolved:
+        elif sampleSolved and contest.tieBreaker:
             sampleProbs += 1
     
     # The user's score is dependent on the number of solved problems and the number of penalty points
