@@ -149,10 +149,7 @@ def runCode(sub):
             
             
     sub.result = result    
-    if(sub.result == "tle" or sub.result == "runtime_error" or sub.result == "ok"):
-        sub.status = "judged"
-    if(sub.result == "wrong_answer" or sub.result == "extra_output"):
-        sub.result == "pending"
+    
     if readFile(f"/tmp/{sub.id}/result.txt") == "compile_error\n":
         sub.results = "compile_error"
         sub.delete()
