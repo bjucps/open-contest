@@ -23,6 +23,8 @@ class CodeEditor(UIElement):
         ])
 
 def getSample(datum, num: int) -> Card:
+    if datum.input == None: datum.input = "" 
+    if datum.output == None: datum.output = "" 
     return Card("Sample #{}".format(num), div(cls="row", contents=[
         div(cls="col-6", contents=[
             h.p("Input:", cls="no-margin"),
@@ -48,36 +50,31 @@ def viewProblem(params, user):
             return ""
         if problem not in Contest.getCurrent().problems:
             return ""
-    if(contest.showProblInfoBlocks == "Off"):
-        return Page(
-            h.input(type="hidden", id="problem-id", value=problem.id),
-            h2(problem.title, cls="page-title"), 
-            div(cls="problem-description", contents=[
-                div(cls="samples", contents=list(map(lambda x: getSample(x[0], x[1]), zip(problem.sampleData, range(problem.samples)))))
-            ]),           
-            CodeEditor(),
-            div(cls="align-right", contents=[
-                h.button("Test Code", cls="button test-samples button-white"),
-                h.button("Submit Code", cls="button submit-problem")
-            ])
-        )
-    else:        
-        return Page(
-            h.input(type="hidden", id="problem-id", value=problem.id),
-            h2(problem.title, cls="page-title"),
-            div(cls="problem-description", contents=[
+    contents = []
+    if(contest.showProblInfoBlocks == "On"):
+        contents = [
                 Card("Problem Statement", formatMD(problem.statement), cls="stmt"),
                 Card("Input Format", formatMD(problem.input), cls="inp"),
                 Card("Output Format", formatMD(problem.output), cls="outp"),
-                Card("Constraints", formatMD(problem.constraints), cls="constraints"),
-                div(cls="samples", contents=list(map(lambda x: getSample(x[0], x[1]), zip(problem.sampleData, range(problem.samples)))))
-            ]),
-            CodeEditor(),
-            div(cls="align-right", contents=[
-                h.button("Test Code", cls="button test-samples button-white"),
-                h.button("Submit Code", cls="button submit-problem")
-            ])
-        )
+                Card("Constraints", formatMD(problem.constraints), cls="constraints"),                
+                ]
+    contents.append(div(cls="samples", contents=list(map(lambda x: getSample(x[0], x[1]), zip(problem.sampleData, range(problem.samples))))))
+    
+    return Page(
+        h.input(type="hidden", id="problem-id", value=problem.id),
+        h2(problem.title, cls="page-title"),
+        div(cls="problem-description", contents=contents),
+        CodeEditor(),
+        div(cls="stmt card ui-sortable-handle", contents=[
+            div(cls="card-header", contents=[h2("Custom Input", cls="card-title")]),
+            div(cls="card-contents", contents=[h.textarea(id="custom-input", cls="col-12")])
+        ]),
+        div(cls="align-right",id="custom-code-text", contents=[
+            h.button("Test Custom Code", cls="button test-custom button-white"),
+            h.button("Test Code", cls="button test-samples button-white"),
+            h.button("Submit Code", cls="button submit-problem")
+        ])
+    )
 
 def listProblems(params, user):
     if Contest.getCurrent():
@@ -87,7 +84,12 @@ def listProblems(params, user):
             probCards.append(Card(
                 prob.title,
                 prob.description,
-                f"/problems/{prob.id}"
+                f"/problems/{prob.id}",
+                None,
+                None,
+                None,
+                user,
+                prob.id
             ))
         return Page(
             h2("Problems", cls="page-title"),
@@ -112,3 +114,4 @@ def listProblems(params, user):
 
 register.web("/problems$", "loggedin", listProblems)
 register.web("/problems/([0-9a-f-]+)", "loggedin", viewProblem)
+
