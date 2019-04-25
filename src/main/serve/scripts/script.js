@@ -813,7 +813,7 @@ Judging Page
         });
     }
 
-    }
+    
 
     function download(id) {
         $(".rejudge").attr("disabled", true);
