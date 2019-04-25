@@ -40,7 +40,7 @@ class Problem:
             self.tests       = int(details["tests"])
             self.sampleData  = [Datum.get(id, i) for i in range(self.samples)]
             self.testData    = [Datum.get(id, i) for i in range(self.tests)]
-            self.timelimit   = details["timelimit"]
+            self.timelimit   = details.get("timelimit",str(Problem.default_timelimit))
         else:
             self.id          = None
             self.title       = None

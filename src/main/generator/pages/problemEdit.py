@@ -56,10 +56,6 @@ def editProblem(params, user):
                     h.label(**{"for": "problem-title", "contents":"Title"}),
                     h.input(cls="form-control", name="problem-title", id="problem-title", value=prob.title)
                 ]),
-                div(cls="form-group col-6", contents=[
-                    h.label(**{"for": "problem-timelimit", "contents":"Problem Time Limit"}),
-                    h.input(cls="form-control", type="number",name="problem-timelimit", id="problem-timelimit", value=escape(prob.timelimit))
-                ]),
                 div(cls="form-group col-12", contents=[
                     h.label(**{"for": "problem-description", "contents":"Description"}),
                     h.textarea(cls="form-control", name="problem-description", id="problem-description", contents=escape(prob.description))
@@ -83,6 +79,10 @@ def editProblem(params, user):
                 div(cls="form-group col-12", contents=[
                     h.label(**{"for": "problem-samples", "contents":"Number of Sample Cases"}),
                     h.input(cls="form-control", type="number", name="problem-samples", id="problem-samples", value=prob.samples)
+                ]),
+                div(cls="form-group col-6", contents=[
+                    h.label(**{"for": "problem-timelimit", "contents":"Problem Time Limit"}),
+                    h.input(cls="form-control", type="number",name="problem-timelimit", id="problem-timelimit", value=escape(prob.timelimit))
                 ]),
             ]),
             div(cls="align-right col-12", contents=[
@@ -116,10 +116,6 @@ def newProblem(params, user):
                     h.label(**{"for": "problem-title", "contents":"Title"}),
                     h.input(cls="form-control", name="problem-title", id="problem-title", value="Title")
                 ]),
-               div(cls="form-group col-6", contents=[
-                    h.label(**{"for": "problem-timelimit", "contents":"Problem Time Limit"}),
-                    h.input(cls="form-control", type="number",name="problem-timelimit", id="problem-timelimit", value=Problem.default_timelimit)
-                ]),
                 div(cls="form-group col-12", contents=[
                     h.label(**{"for": "problem-description", "contents":"Description"}),
                     h.textarea(cls="form-control", name="problem-description", id="problem-description", contents="Text for list of problems")
@@ -142,6 +138,10 @@ def newProblem(params, user):
                 ]),
                 div(cls="form-group col-12", contents=[
                     h.input(cls="form-control", type="hidden", name="problem-samples", id="problem-samples", value=0)
+                ]),
+               div(cls="form-group col-6", contents=[
+                    h.label(**{"for": "problem-timelimit", "contents":"Problem Time Limit"}),
+                    h.input(cls="form-control", type="number",name="problem-timelimit", id="problem-timelimit", value=Problem.default_timelimit)
                 ]),
             ]),
             div(cls="align-right col-12", contents=[

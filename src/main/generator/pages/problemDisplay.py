@@ -53,7 +53,6 @@ def viewProblem(params, user):
     contents = []
     if contest == None or contest.showProblInfoBlocks == "On":
         contents = [
-                Card("Problem Time Limit", formatMD(problem.timelimit), cls="timelmt"),
                 Card("Problem Statement", formatMD(problem.statement), cls="stmt"),
                 Card("Input Format", formatMD(problem.input), cls="inp"),
                 Card("Output Format", formatMD(problem.output), cls="outp"),
