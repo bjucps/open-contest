@@ -86,15 +86,18 @@ def listProblems(params, user):
             button = """ <button type="button" onclick="rejudgeAll('?')" class="btn btn-primary rejudge" id="rejudgebutton?" style="position:relative; z-index: 5">
                             Rejudge All
                         </button>""".replace('?', probid.split('/')[-1])
+            f = "rejudgeAll('?')".replace('?', probid.split('/')[-1])
+
             probCards.append(Card(
-                prob.title + (button if user.isAdmin() else ""),
+                prob.title,# (button if user.isAdmin() else ""),
                 prob.description,
                 probid,
                 None,
                 None,
                 None,
                 user,
-                prob.id
+                prob.id,
+                f
             ))
         return Page(
             h2("Problems", cls="page-title"),
