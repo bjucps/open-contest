@@ -800,14 +800,18 @@ Judging Page
             alert(`New Result: ${verdict_name[data]}`);
         });
     }
-
+  
     function rejudgeAll(id)
     {
-        $(`#rejudgebutton${id}`).attr("disabled", true);
+        
+        $(".btn-primary").attr("disabled", true);
+
         $.post("/rejudgeAll", {id:id}, data =>{
-            $(`#rejudgebutton${id}`).attr("disabled", false);
+            
+            $(".btn-primary").attr("disabled", false);
             alert("DONE");
         });
+    }
 
     }
 
@@ -816,7 +820,7 @@ Judging Page
         $(".rejudge").addClass("button-gray");
 
         $.post("/download", {id: id}, data => {
-            $(".rejudge").attr("disabled", false);
+            $("#").attr("disabled", false);
             $(".rejudge").removeClass("button-gray");
             file = JSON.parse(data)
             jQuery.each(file, (name, value) => {

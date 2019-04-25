@@ -95,7 +95,7 @@ class Card(UIElement):
         elif reply:
             deleteLink = div("Reply", cls="delete-link", onclick=reply)
         if rejudge:
-            deleteLink = div(h.button("Rejudge", cls="btn btn-primary"), cls="delete-link", onclick=rejudge)
+            deleteLink = div(h.button("Rejudge", cls="btn btn-primary" ,onclick=rejudge), cls="delete-link")
         result = ''
         if user != None and problemId != None:
             icon = ''
