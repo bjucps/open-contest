@@ -72,6 +72,7 @@ class Problem:
             "constraints": self.constraints,
             "samples":     self.samples,
             "tests":       self.tests,
+            "timelimit":   self.timelimit
         }
 
     def save(self):
