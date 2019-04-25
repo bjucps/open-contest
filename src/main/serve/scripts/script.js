@@ -820,7 +820,7 @@ Judging Page
         $(".rejudge").addClass("button-gray");
 
         $.post("/download", {id: id}, data => {
-            $("#").attr("disabled", false);
+            $(".rejudge").attr("disabled", false);
             $(".rejudge").removeClass("button-gray");
             file = JSON.parse(data)
             jQuery.each(file, (name, value) => {
