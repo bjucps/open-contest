@@ -37,14 +37,16 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-sentry_sdk.init(
-    dsn="https://df3efc6cb9a649eab71081a510456b0a@sentry.bjucps.dev/7",
-    integrations=[DjangoIntegration()],
+MONITORING = True
+if MONITORING:
+    sentry_sdk.init(
+        dsn="https://df3efc6cb9a649eab71081a510456b0a@sentry.bjucps.dev/7",
+        integrations=[DjangoIntegration()],
 
-    # If you wish to associate users to errors (assuming you are using
-    # django.contrib.auth) you may enable sending PII data.
-    send_default_pii=False
-)
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=False
+    )
 
 # Application definition
 
@@ -56,11 +58,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'contest.apps.ContestConfig'
-    'django_prometheus',
 ]
 
-MIDDLEWARE = [
-    'django_prometheus.middleware.PrometheusBeforeMiddleware',
+if MONITORING:
+    INSTALLED_APPS += ['django_prometheus']
+
+MIDDLEWARE = []
+
+if MONITORING:
+    MIDDLEWARE += ['django_prometheus.middleware.PrometheusBeforeMiddleware']
+
+MIDDLEWARE += [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -68,8 +76,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
+
+if MONITORING:
+    MIDDLEWARE += ['django_prometheus.middleware.PrometheusAfterMiddleware']
 
 ROOT_URLCONF = 'opencontest.urls'
 
