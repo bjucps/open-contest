@@ -18,7 +18,7 @@ class Message:
             self.id = details["id"]
             self.fromUser = User.get(details["from"])
             self.toUser = User.get(details["to"])
-            self.isGeneral = bool(details["general"])
+            self.isGeneral = bool(details["general"]) # General announcement
             self.isAdmin = bool(details["admin"])   # Message sent to admin
             self.message = details["message"]
             self.timestamp = float(details["timestamp"])

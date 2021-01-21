@@ -754,8 +754,14 @@ Messages Page
 
     function showIncomingMessage(msg) {
         var body = msg.message;
-        if (msg.general) 
+        if (msg.general) {
             body = "General Announcement: " + body
+        } else if (msg.admin) {
+            // message sent to admin by participant
+            body = "From " + msg.from.username + ": " + body
+        } else {
+            body = "From judges: " + body
+        }
         $("div.message-alerts").append(`<div class="alert alert-warning alert-dismissible fade show" role="alert">
             ${body}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
