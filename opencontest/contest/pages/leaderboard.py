@@ -210,11 +210,16 @@ def contestreport(request):
                 
             else:
                 outproblems.append(h.td(f""))
-            
-        user = User.getByName(person["name"])
+        
         # Previous logic checked to make sure user was a valid object
-        # before retrieving its members
-        displayName = user.fullname if contest.displayFullname == "On" else user.username
+        # before retrieving its members. That is why this code does as
+        # well
+        user = User.getByName(person["name"])
+        if user:
+            displayName = user.fullname if contest.displayFullname == "On" else user.username
+        else:
+            displayName = person["name"]
+        
         detailedContestDisplay.append(h.tr(
             h.td(person["rank"]),
             h.td(displayName),
