@@ -24,6 +24,7 @@ class Contest:
             self.showProblInfoBlocks = details.get("showProblInfoBlocks","Off")
             self.problems = [Problem.get(id) for id in details["problems"]]
             self.tieBreaker = str(details.get("tieBreaker", "")) == "true"
+            self.displayFullname = details["displayFullname"]
 
         else:
             self.id = None
@@ -34,6 +35,7 @@ class Contest:
             self.showProblInfoBlocks = None
             self.problems = None
             self.tieBreaker = False
+            self.displayFullname = True
 
     @staticmethod
     def get(id: uuid4):
@@ -52,7 +54,8 @@ class Contest:
             "scoreboardOff": self.scoreboardOff,
             "showProblInfoBlocks": self.showProblInfoBlocks,
             "problems": [prob.id for prob in self.problems],            
-            "tieBreaker": self.tieBreaker
+            "tieBreaker": self.tieBreaker,
+            "displayFullname": self.displayFullname
         }
 
     def save(self):
@@ -77,7 +80,8 @@ class Contest:
                 "start": self.start,
                 "end": self.end,
                 "problems": [prob.toJSONSimple() for prob in self.problems],
-                "tieBreaker": self.tieBreaker
+                "tieBreaker": self.tieBreaker,
+                "displayFullname": self.displayFullname
             }
 
     @staticmethod
