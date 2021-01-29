@@ -35,7 +35,7 @@ class Contest:
             self.showProblInfoBlocks = None
             self.problems = None
             self.tieBreaker = False
-            self.displayFullname = True
+            self.displayFullname = None
 
     @staticmethod
     def get(id: uuid4):
