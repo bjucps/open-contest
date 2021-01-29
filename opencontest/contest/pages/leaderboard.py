@@ -49,8 +49,9 @@ def leaderboard(request):
     for userid in subs:
         usersubs = subs[userid]
         scor = score(usersubs, contest, problemSummary)
+        displayName = User.get(userid).fullname if contest.displayFullname == "On" else User.get(userid).username
         scores.append((
-            User.get(userid).username,
+            displayName,
             scor[0],
             scor[1],
             scor[2],
@@ -153,7 +154,7 @@ def contestreport(request):
         problems.append(prob.id)
         problemSummaryreport.append({"id":prob.id,"title":prob.title,"attempts":0,"correct":0}) 
         reportcols.append(h.th(f"{problemNum}", cls="center"))
-
+    
     scores = []
     for user in subs:
         usersubs = subs[user]
@@ -211,13 +212,12 @@ def contestreport(request):
                 outproblems.append(h.td(f""))
             
         user = User.getByName(person["name"])
-        if user and user.fullname:
-            fullname = user.fullname
-        else:
-            fullname = person["name"]
+        # Previous logic checked to make sure user was a valid object
+        # before retrieving its members
+        displayName = user.fullname if contest.displayFullname == "On" else user.username
         detailedContestDisplay.append(h.tr(
             h.td(person["rank"]),
-            h.td(fullname),
+            h.td(displayName),
             h.td(person["name"]) if start  <= time.time() <=  end else "",
             h.td(person["solved"]),
             h.td(person["points"]),
