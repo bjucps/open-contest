@@ -25,6 +25,7 @@ def createContest(request):
     contest.end = int(request.POST.get("end"))
     contest.scoreboardOff = int(request.POST.get("scoreboardOff"))
     contest.showProblInfoBlocks = request.POST.get("showProblInfoBlocks")
+    contest.displayFullname = request.POST.get("displayFullname")
     contest.problems = [Problem.get(id) for id in json.loads(request.POST.get("problems"))]
     if str(request.POST.get("tieBreaker")).lower() == "true":
         contest.tieBreaker = True
