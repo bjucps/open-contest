@@ -54,13 +54,9 @@ def editContest(request, *args, **kwargs):
     start = time.time() * 1000
     end = (time.time() + 3600) * 1000
     scoreboardOff = end
-    displayFullname = "Off"
+    displayFullname = False
     showProblInfoBlocks = ""
 
-    displayFullname_option = [
-        h.option("On", value="On"),
-        h.option("Off", value="Off")
-    ]
     showProblInfoBlocks_option = [
         h.option("On", value="On"),
         h.option("Off", value="Off")
@@ -74,10 +70,6 @@ def editContest(request, *args, **kwargs):
         scoreboardOff = contest.scoreboardOff   
         
         displayFullname = contest.displayFullname
-        # Switch options to display current value as the first
-        # choice
-        if displayFullname == "Off":
-            displayFullname_option = [h.option("Off", value="Off"), h.option("On", value="On")]
 
         showProblInfoBlocks = contest.showProblInfoBlocks
         if showProblInfoBlocks == "Off":
@@ -157,7 +149,10 @@ def editContest(request, *args, **kwargs):
                 h.input(type="hidden", id="displayFullname", value=displayFullname),                
                 div(cls="form-group col-6", contents=[
                     h.label(**{"for": "contest-display-fullname", "contents":"Show Full Name"}),
-                    h.select(cls="form-control custom-select", name="contest-display-fullname", id="contest-display-fullname", contents=displayFullname_option)
+                    h.select(cls="form-control", name="contest-display-fullname", id="contest-display-fullname", contents=[
+                        *[h.option(text, value=val, selected="selected") if displayFullname == val else
+                          h.option(text, value=val) for text, val in zip(("On", "Off"), (True, False))]
+                    ])
                 ]),
             ]),
             div(cls="align-right col-12", contents=[
