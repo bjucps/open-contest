@@ -49,7 +49,11 @@ def leaderboard(request):
     for userid in subs:
         usersubs = subs[userid]
         scor = score(usersubs, contest, problemSummary)
-        displayName = User.get(userid).fullname if contest.displayFullname == "On" else User.get(userid).username
+
+        # Set displayName to fullname if displayFullname option is true,
+        # otherwise, use the username
+        displayName = User.get(userid).fullname if contest.displayFullname == True else User.get(userid).username
+        
         scores.append((
             displayName,
             scor[0],
@@ -216,7 +220,9 @@ def contestreport(request):
         # well
         user = User.getByName(person["name"])
         if user:
-            displayName = user.fullname if contest.displayFullname == "On" else user.username
+            # Set displayName to fullname if displayFullname option is true,
+            # otherwise, use the username
+            displayName = user.fullname if contest.displayFullname == True else user.username
         else:
             displayName = person["name"]
         
