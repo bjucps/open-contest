@@ -49,8 +49,13 @@ def leaderboard(request):
     for userid in subs:
         usersubs = subs[userid]
         scor = score(usersubs, contest, problemSummary)
+
+        # Set displayName to fullname if displayFullname option is true,
+        # otherwise, use the username
+        displayName = User.get(userid).fullname if contest.displayFullname == True else User.get(userid).username
+        
         scores.append((
-            User.get(userid).username,
+            displayName,
             scor[0],
             scor[1],
             scor[2],
@@ -153,7 +158,7 @@ def contestreport(request):
         problems.append(prob.id)
         problemSummaryreport.append({"id":prob.id,"title":prob.title,"attempts":0,"correct":0}) 
         reportcols.append(h.th(f"{problemNum}", cls="center"))
-
+    
     scores = []
     for user in subs:
         usersubs = subs[user]
@@ -209,15 +214,21 @@ def contestreport(request):
                 
             else:
                 outproblems.append(h.td(f""))
-            
+        
+        # Previous logic checked to make sure user was a valid object
+        # before retrieving its members. That is why this code does as
+        # well
         user = User.getByName(person["name"])
-        if user and user.fullname:
-            fullname = user.fullname
+        if user:
+            # Set displayName to fullname if displayFullname option is true,
+            # otherwise, use the username
+            displayName = user.fullname if contest.displayFullname == True else user.username
         else:
-            fullname = person["name"]
+            displayName = person["name"]
+        
         detailedContestDisplay.append(h.tr(
             h.td(person["rank"]),
-            h.td(fullname),
+            h.td(displayName),
             h.td(person["name"]) if start  <= time.time() <=  end else "",
             h.td(person["solved"]),
             h.td(person["points"]),

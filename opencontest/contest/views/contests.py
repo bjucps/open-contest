@@ -31,6 +31,10 @@ def createContest(request):
     else:
         contest.tieBreaker = False
 
+    # True if "displayFullname" == "true"
+    contest.displayFullname = str(request.POST.get("displayFullname")).lower() == "true"
+    
+
     contest.save()
 
     return JsonResponse(contest.id, safe=False)

@@ -444,8 +444,10 @@ Users page
 
     function createUser(type) {
         var username = prompt("New User's Name")
+        var fullname = prompt("New User's Fullname")
+
         if (username) {
-            $.post("/createUser", {type: type, username: username}, password => {
+            $.post("/createUser", {type: type, username: username, fullname: fullname}, password => {
                 window.location.reload();
             });
         }
@@ -477,6 +479,7 @@ Contest page
         var endTime = $("#contest-end-time").val();
         var scoreboardOffTime = $("#scoreboard-off-time").val();
         var showProblInfoBlocks = $("#show-problem-info-blocks").val();
+        var displayFullname = $("#contest-display-fullname").val();
 
         var tieBreaker = $("#scoreboard-tie-breaker").val();
 
@@ -511,7 +514,8 @@ Contest page
         }
 
         $.post("/editContest", {id: id, name: name, start: start, end: end, scoreboardOff: endScoreboard, 
-            showProblInfoBlocks: showProblInfoBlocks, tieBreaker: tieBreaker.toString(), 
+            showProblInfoBlocks: showProblInfoBlocks, tieBreaker: tieBreaker.toString(),
+            displayFullname: displayFullname.toString(),
             problems: JSON.stringify(problems)}, id => {
             if (window.location.pathname == "/contests/new") {
                 window.location = `/contests/${id}`;

@@ -178,8 +178,8 @@ class SubmissionRow(UIElement):
             h.td(cls='time-format', contents=sub.timestamp),
             h.td(sub.language),
             h.td(
-                h.i("&nbsp;", cls=f"fa fa-{icons[sub.result]}"),
-                h.span(verdict_name[sub.result])
+                h.i("&nbsp;", cls=f"fa fa-{icons.get(sub.result)}"),
+                h.span(verdict_name.get(sub.result))
             ),
             h.td(sub.status),
             h.td(checkoutUser.username if checkoutUser is not None else "None"),

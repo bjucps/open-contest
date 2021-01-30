@@ -1,3 +1,5 @@
+# unique comment identifer
+
 import time
 
 from django.http import HttpResponse
@@ -52,17 +54,23 @@ def editContest(request, *args, **kwargs):
     start = time.time() * 1000
     end = (time.time() + 3600) * 1000
     scoreboardOff = end
+    displayFullname = False
     showProblInfoBlocks = ""
+
     showProblInfoBlocks_option = [
         h.option("On", value="On"),
         h.option("Off", value="Off")
     ]
+    
     tieBreaker = False
     if contest:
         title = contest.name
         start = contest.start
         end = contest.end
-        scoreboardOff = contest.scoreboardOff        
+        scoreboardOff = contest.scoreboardOff   
+        
+        displayFullname = contest.displayFullname
+
         showProblInfoBlocks = contest.showProblInfoBlocks
         if showProblInfoBlocks == "Off":
             showProblInfoBlocks_option = [h.option("Off", value="Off"), h.option("On", value="On")]
@@ -133,6 +141,16 @@ def editContest(request, *args, **kwargs):
                     h.label(**{"for": "scoreboard-tie-breaker", "contents":"Sample Data Breaks Ties"}),
                     h.select(cls="form-control", name="scoreboard-tie-breaker", id="scoreboard-tie-breaker", contents=[
                         *[h.option(text, value=val, selected="selected") if tieBreaker == val else
+                          h.option(text, value=val) for text, val in zip(("On", "Off"), (True, False))]
+                    ])
+                ]),
+
+                # Option to display a users' fullname
+                h.input(type="hidden", id="displayFullname", value=displayFullname),                
+                div(cls="form-group col-6", contents=[
+                    h.label(**{"for": "contest-display-fullname", "contents":"Show Full Name"}),
+                    h.select(cls="form-control", name="contest-display-fullname", id="contest-display-fullname", contents=[
+                        *[h.option(text, value=val, selected="selected") if displayFullname == val else
                           h.option(text, value=val) for text, val in zip(("On", "Off"), (True, False))]
                     ])
                 ]),

@@ -31,7 +31,7 @@ urlpatterns = [
     path('logout', logout, name='logout'),
 
     path('problems', listProblems, name='listProblems'),
-    path('problems/<str:id>', viewProblem, name='viewProblem'),
+    path('problems/<uuid:id>', viewProblem, name='viewProblem'),
 
     path('getMessages', getMessages, name='getMessages'),
     path('sendMessage', sendMessage, name='sendMessage'),

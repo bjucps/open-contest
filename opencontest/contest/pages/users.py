@@ -19,6 +19,11 @@ class UserCard(UIElement):
                     h.p("&quot;", cls="username-hidden")
                 ),
                 div(
+                    h.strong(h.i("Fullname:")),
+                    h.br(),
+                    f"&quot;{user.fullname}&quot;",
+                    h.br(),
+
                     h.strong(h.i("Password:")),
                     h.br(),
                     f"&quot;{user.password}&quot;"

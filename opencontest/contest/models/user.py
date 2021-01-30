@@ -13,7 +13,7 @@ class User:
             self.id = userNames[username].id
         self.username = username
         self.password = password
-        self.fullname = fullname
+        self.fullname = fullname or "Anonymous"
         self.type = type
 
     @staticmethod
@@ -42,6 +42,7 @@ class User:
         return {
             "id": self.id,
             "username": self.username,
+            "fullname": self.fullname,
             "password": self.password,
             "type": self.type
         }
