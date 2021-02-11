@@ -102,7 +102,7 @@ class Problem:
     def toJSON(self):
         with lock.gen_rlock():
             json = self.toJSONSimple()
-            json.sampleData = [datum.toJSON() for datum in self.sampleData]
+            json["sampleData"] = [datum.toJSON() for datum in self.sampleData]
             return json
     
     def toJSONFull(self):
