@@ -3,3 +3,4 @@ readerwriterlock==1.0.6
 markdown2==2.3.8
 uwsgi==2.0.18
 newrelic==6.0.1.155
+beautifulsoup4==4.9.3

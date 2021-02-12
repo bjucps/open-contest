@@ -575,6 +575,9 @@ Judging Page
         font-weight: bold;
         margin-top: 5px;
     }
+    #judge-viewDiffButton {
+        padding: 10px;
+    }
     .modal-dialog {
         max-width: 70vw;
     }
@@ -596,4 +599,43 @@ Judging Page
     }
     table#submissions tbody tr:hover {
         background: #ddd;
+    }
+/*--------------------------------------------------------------------------------------------------
+Diff Page
+--------------------------------------------------------------------------------------------------*/
+    table.diff {
+        font-family:Courier;
+        border:medium;
+        width: 100%;
+    }
+    table.diff > td, table.diff th {
+        padding: 1px;
+    }
+    .diff_remove {
+        background-color: #f7ebf7;
+    }
+    .diff_insert {
+        background-color: #ebf7eb;
+    }
+    .diff_blank {
+        background-color: #e0e0e0;
+    }
+    .diff_header {
+        background-color:#e0e0e0;
+        padding: 1px;
+    }
+    td.diff_header {
+        text-align:center;
+    }
+    .diff_next {
+        background-color:#c0c0c0
+    }
+    .diff_add {
+        background-color:#aaffaa
+    }
+    .diff_chg {
+        background-color:#ffff77
+    }
+    .diff_sub {
+        background-color:#ffaaaa
     }

@@ -1,10 +1,12 @@
-import logging
+import logging, difflib, re
+from bs4 import BeautifulSoup
 
 from django.http import HttpResponse, JsonResponse
 
 from contest.auth import admin_required
 from contest.models.contest import Contest
 from contest.models.submission import Submission
+from contest.models.problem import Problem
 from contest.models.user import User
 from contest.pages.lib import Page
 from contest.pages.lib.htmllib import UIElement, h, div, code_encode, h1, h2
@@ -85,6 +87,15 @@ class TestCaseData(UIElement):
         if input == None: input = "" 
         if output == None: output = "" 
         self.html = div(id=f"tabs-{sub.id}-{num}", contents=[
+            div(cls="row", id="judge-viewDiffButton", contents=[
+                div(cls="col-12", contents=[
+                    h.button(
+                        "View Diff",
+                        onclick=f"window.open('viewDiff/{sub.id}#case{num}diff', '_blank');",
+                        target="_blank",
+                    )
+                ])
+            ]),
             div(cls="row", contents=[
                 div(cls="col-12", contents=[
                     h.h4("Input"),
@@ -101,15 +112,6 @@ class TestCaseData(UIElement):
                     h.code(code_encode(answer))
                 ])
             ]),
-            div(cls="row", contents=[
-                div(cls="col-12", contents=[
-                    h.h4("Diff"),
-                    h.em("Insertions are in <span style=color:darkgreen;background-color:palegreen>green</span>, deletions are in <span style=color:darkred;background-color:#F6B0B0>red</span>"),
-                    h.code(id=f"diff-{sub.id}-{num}", contents=[
-                        h.script(f"document.getElementById('diff-{sub.id}-{num}').innerHTML = getDiff(`{output.rstrip()}`, `{answer.rstrip()}`)")
-                    ])
-                ])
-            ])
         ])
 
 
@@ -251,3 +253,110 @@ def judge_submission_close(request):
     if submission.checkout == user.id:
         submission.checkout = None
     return JsonResponse('ok', safe=False)
+
+def generateDiffTable(original: str, output: str) -> str:
+    """Generate a HTML diff table given two strings
+    
+    original -- the original string
+    
+    output -- the string to compare to the original to detect changes
+    """
+    
+    # Create a HtmlDiff object to create our table
+    hd = difflib.HtmlDiff(wrapcolumn=100)
+
+    # Create the table
+    table = hd.make_table(
+        original.split("\n"),   # Split both strings because make_table
+        output.split("\n")      # takes a list of strings for each argument
+    )
+
+    # Remove extra columns
+    r = re.compile("<td class=\"diff_next\".*?</td>")
+    test = r.findall(table)
+    for i in test:
+        table = table.replace(i, "")
+    
+    table = BeautifulSoup(table, "html.parser")
+
+    # Iterate over every row in the table
+    for row in table.find_all("tr"):
+
+        # Get the 2nd and 4th columns which contain
+        # the actual diffs
+        colNo = 0
+        expected = None
+        output = None
+        for cell in row:
+            if colNo == 1:
+                expected = cell
+            elif colNo == 3:
+                output = cell
+            colNo += 1
+
+        # Highlight both rows if there was a diff found
+        # in both columns (a diff will have a <span>
+        # child element if a change was found)
+        if expected.find('span') and output.find('span'):
+            expected['class'] = "diff_remove"
+            output['class'] = "diff_insert"
+        
+        # Highlight the right column with green and the
+        # other column with gray if there was only an
+        # insert
+        elif output.find('span'):
+            output['class'] = "diff_insert"
+            expected['class'] = "diff_blank"
+        
+        # Highlight the left column with green and the
+        # other column with gray if there was only a
+        # deletion
+        elif expected.find('span'):
+            expected['class'] = "diff_insert"
+            output['class'] = "diff_blank"
+
+    return table.decode_contents()
+
+@admin_required
+def viewDiff(request, *args, **kwargs):
+    submission = Submission.get(kwargs.get('id'))
+    user = User.get(request.COOKIES['user'])
+    problem = submission.problem
+
+    answers = submission.readFilesForDisplay('out')
+
+    diffTables = []
+    for i in range(len(problem.testData)):
+        if i < problem.samples:
+            caseType = "Sample"
+            caseNo = i
+        else:
+            caseType = "Judge"
+            caseNo = i - problem.samples
+
+        diffTables.append(
+            h.div(
+                h.h3(f"{caseType} Case #{caseNo} (Expected Output | Contestant Output)",id=f"case{i}diff"),
+                h.div(
+                    h.script(f"document.getElementById('case{i}result').innerHTML = 'Result: ' + verdict_name.{submission.results[i]}"),
+                    id=f"case{i}result",
+                ),
+                generateDiffTable(problem.testData[i].output, answers[i]),
+            ))
+        pass
+    
+    return HttpResponse(
+        div(cls="center", contents=[
+
+            h.link(rel="stylesheet", href="/static/styles/style.css?642ab0bc-f075-4c4c-a2ba-00f55392dafc", type="text/css"),
+
+            h.script(src="/static/lib/jquery/jquery.min.js"),
+            h.script(src="/static/lib/jqueryui/jquery-ui.min.js"),
+            h.script(src="/static/scripts/script.js?75c1bf1e-10e8-4c8d-9730-0903f6540439"),
+
+            h2(f"Diffs for {submission.id}", cls="center"),
+            
+            h.em("Insertions are in <span style=color:darkgreen;background-color:palegreen>green</span>, deletions are in <span style=color:darkred;background-color:#F6B0B0>red</span>"),
+
+            h.div(contents=diffTables)
+        ]))

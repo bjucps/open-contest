@@ -1,7 +1,7 @@
 from django.urls import path
 
 from contest.pages.contests import listContests, editContest
-from contest.pages.judge import judge, judge_submission, judge_submission_close
+from contest.pages.judge import judge, judge_submission, judge_submission_close, viewDiff
 from contest.pages.leaderboard import leaderboard, contestreport
 from contest.pages.messages import displayMessages
 from contest.pages.problemDisplay import listProblems, viewProblem
@@ -73,5 +73,6 @@ urlpatterns = [
     path('changeResult', changeResult, name='changeResult'),
     path('rejudge', rejudge, name='rejudge'),
     path('download', download, name='download'),
-    path('rejudgeAll', rejudgeAll, name='rejudgeAll')
+    path('rejudgeAll', rejudgeAll, name='rejudgeAll'),
+    path('viewDiff/<str:id>', viewDiff, name='viewDiff')
 ]
