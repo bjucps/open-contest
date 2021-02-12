@@ -87,6 +87,15 @@ class TestCaseData(UIElement):
         if input == None: input = "" 
         if output == None: output = "" 
         self.html = div(id=f"tabs-{sub.id}-{num}", contents=[
+            div(cls="row", id="judge-viewDiffButton", contents=[
+                div(cls="col-12", contents=[
+                    h.button(
+                        "View Diff",
+                        onclick=f"window.open('viewDiff/{sub.id}#case{num}diff', '_blank');",
+                        target="_blank",
+                    )
+                ])
+            ]),
             div(cls="row", contents=[
                 div(cls="col-12", contents=[
                     h.h4("Input"),
@@ -103,15 +112,6 @@ class TestCaseData(UIElement):
                     h.code(code_encode(answer))
                 ])
             ]),
-            div(cls="row", contents=[
-                div(cls="col-12", contents=[
-                    h.button(
-                        "View Diff",
-                        onclick=f"window.open('viewDiff/{sub.id}#case{num}diff', '_blank');",
-                        target="_blank"
-                    )
-                ])
-            ])
         ])
 
 
@@ -314,7 +314,7 @@ def generateDiffTable(original: str, output: str) -> str:
         elif expected.find('span'):
             expected['class'] = "diff_insert"
             output['class'] = "diff_blank"
-    
+
     return table.decode_contents()
 
 @admin_required
@@ -336,7 +336,7 @@ def viewDiff(request, *args, **kwargs):
 
         diffTables.append(
             h.div(
-                h.h3(f"{caseType} Case #{caseNo}",id=f"case{i}diff"),
+                h.h3(f"{caseType} Case #{caseNo} (Expected Output | Contestant Output)",id=f"case{i}diff"),
                 h.div(
                     h.script(f"document.getElementById('case{i}result').innerHTML = 'Result: ' + verdict_name.{submission.results[i]}"),
                     id=f"case{i}result",
