@@ -44,7 +44,7 @@ class TestDataCard(UIElement):
                 p("Output:", cls="no-margin"),
                 h.code(code_encode(testData.output))
             ])
-        ]), cls=cls, delete=f"deleteTestData({num})")
+        ]), cls=cls, delete=f"deleteTestData({num})", edit=f"editTestDataDialog({num})")
 
 
 @admin_required
@@ -109,7 +109,23 @@ def editProblem(request, *args, **kwargs):
             div(
                 h.button("Cancel", **{"type":"button", "class": "button button-white", "data-dismiss": "modal"}),
                 h.button("Add Test Data", **{"type":"button", "class": "button", "onclick": "createTestData()"})
-            )
+            ),
+            modalID="create-test-data"
+        ),
+        Modal(
+            "Edit Test Data",
+            div(
+                h.h5("Input"),
+                h.textarea(rows="5", cls="edit-test-input col-12 monospace margin-bottom"),
+                h.h5("Output"),
+                h.textarea(rows="5", cls="edit-test-output col-12 monospace"),
+                h.p("ID", cls="current-test-data-id", hidden="")
+            ),
+            div(
+                h.button("Cancel", **{"type":"button", "class": "button button-white", "data-dismiss": "modal"}),
+                h.button("Save Changes", **{"type":"button", "class": "button", "onclick": "editTestData()"})
+            ),
+            modalID="edit-test-data"
         ),
         div(cls="test-data-cards", contents=list(map(TestDataCard, zip(range(prob.tests), prob.testData, [prob.samples] * prob.tests))))
     ))
