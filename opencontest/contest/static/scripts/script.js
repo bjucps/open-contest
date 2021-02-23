@@ -644,11 +644,28 @@ Problem page
         return false;
     }
 
-    function deleteTestData(dataNum) {
+    /**
+     * Opens and Initializes a dialog box confirming if the admin wants to delete a test cases
+     * @param   {Number} dataNum    Test case number to delete
+     */
+    function deleteTestDataDialog(dataNum) {
+
+        // Change the question to ask about the relevant Test Case number
+        $(".delete-test-data-question").html(`Are you sure you want to delete Test Case #${dataNum}?`);
+
+        // Set the test data id variable appropriately
+        $(".delete-test-data-id").html(dataNum);
+
+        // Open the modal
+        $(".delete-test-data").modal();
+    }
+
+    function deleteTestData() {
         if ($(".test-data-cards .card").length <= $("#problem-samples").val()) {
             alert("Deleting this item would make the number of sample cases invalid.");
             return;
         }
+        let dataNum = $(".delete-test-data-id").html();
         $(`.test-data-cards .card:eq(${dataNum})`).remove();
         editProblem();
     }
