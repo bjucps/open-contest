@@ -97,7 +97,7 @@ class Page(UIElement):
 
 
 class Card(UIElement):
-    def __init__(self, title, contents, link=None, cls=None, delete=None, reply=None, rejudge=None):
+    def __init__(self, title, contents, link=None, cls=None, delete=None, reply=None, rejudge=None, edit=None):
         if cls == None:
             cls = "card"
         else:
@@ -110,10 +110,16 @@ class Card(UIElement):
         if rejudge:
             deleteLink = div(h.button("Rejudge All", cls="btn btn-primary", onclick=rejudge), cls="delete-link")
 
+        # Add a pencil to the card if one is desired
+        editLink = ""
+        if edit:
+            editLink = div(h.i("edit", cls="material-icons", onclick=edit), cls="delete-link")
+
         self.html = h.div(cls=cls, contents=[
             div(cls="card-header", contents=[
                 h2(contents=[title], cls="card-title"),
-                deleteLink
+                deleteLink,
+                editLink,
             ]),
             div(cls="card-contents", contents=contents)
         ])
@@ -122,9 +128,13 @@ class Card(UIElement):
 
 
 class Modal(UIElement):
-    def __init__(self, title, body, footer):
+    def __init__(self, title, body, footer, modalID=""):
+        '''
+        modalID - used to uniquely identify different modals. Only necessary when
+                  two or more modals are present on page
+        '''
         # taken from https://getbootstrap.com/docs/4.1/components/modal/
-        self.html = div(cls="modal", role="dialog", contents=[
+        self.html = div(cls=f"modal {modalID}", role="dialog", contents=[
             div(cls="modal-dialog", role="document", contents=[
                 div(cls="modal-content", contents=[
                     div(cls="modal-header", contents=[
