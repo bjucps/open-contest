@@ -588,7 +588,7 @@ Problems page
 Problem page
 --------------------------------------------------------------------------------------------------*/
     function createTestDataDialog() {
-        $("div.modal").modal();
+        $(".create-test-data").modal();
     }
 
     function createTestData() {
@@ -650,6 +650,48 @@ Problem page
             return;
         }
         $(`.test-data-cards .card:eq(${dataNum})`).remove();
+        editProblem();
+    }
+
+    /**
+     * Opens and Initializes a dialog box for editing test cases
+     * @param   {Number} dataNum    Test case number to edit
+     */
+    function editTestDataDialog(dataNum) {
+
+        // Get test case data from test case cards
+        let input = $(`.test-data-cards .card:eq(${dataNum}) code:eq(0)`).html();
+        let output = $(`.test-data-cards .card:eq(${dataNum}) code:eq(1)`).html();
+
+        // Load data into dialog
+        $(".edit-test-input").val(input);
+        $(".edit-test-output").val(output);
+
+        // Change the title of the card to match case number
+        $(".edit-test-data .modal-title").html(`Editing Test Case #${dataNum}`);
+        $(".current-test-data-id").html(dataNum);
+
+        // Load the 
+        $(`.edit-test-data`).modal();
+    }
+
+    /**
+     * Saves test cases currently in the editor
+     */
+    function editTestData() {
+
+        // Get the test case id
+        dataNum = $(".current-test-data-id").html();
+
+        // Get the new input and output
+        let input = $(".edit-test-input").val();
+        let output = $(".edit-test-output").val();
+
+        // Load the new input and output into the test case cards
+        $(`.test-data-cards .card:eq(${dataNum}) code:eq(0)`).html(input);
+        $(`.test-data-cards .card:eq(${dataNum}) code:eq(1)`).html(output);
+
+        // Upload data to server
         editProblem();
     }
     
