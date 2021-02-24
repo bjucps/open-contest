@@ -677,8 +677,8 @@ Problem page
     function editTestDataDialog(dataNum) {
 
         // Get test case data from test case cards
-        let input = $(`.test-data-cards .card:eq(${dataNum}) code:eq(0)`).html();
-        let output = $(`.test-data-cards .card:eq(${dataNum}) code:eq(1)`).html();
+        let input = $(`.test-data-cards .card:eq(${dataNum}) code:eq(0)`).text();
+        let output = $(`.test-data-cards .card:eq(${dataNum}) code:eq(1)`).text();
 
         // Load data into dialog
         $(".edit-test-input").val(input);
@@ -705,8 +705,8 @@ Problem page
         let output = $(".edit-test-output").val();
 
         // Load the new input and output into the test case cards
-        $(`.test-data-cards .card:eq(${dataNum}) code:eq(0)`).html(input);
-        $(`.test-data-cards .card:eq(${dataNum}) code:eq(1)`).html(output);
+        $(`.test-data-cards .card:eq(${dataNum}) code:eq(0)`).text(input);
+        $(`.test-data-cards .card:eq(${dataNum}) code:eq(1)`).text(output);
 
         // Upload data to server
         editProblem();
