@@ -39,35 +39,12 @@ def parseCookie(cookie):
     return results
 
 
-def getUser(cookie):
-    if cookie == None:
-        return None
-    if "id" in cookie:
-        return User.get(cookie["id"])
-    return None
-
-
-def isAdmin(cookie):
-    user = getUser(cookie)
-    if user == None:
-        return False
-    return user.type == "admin"
-
-
-def isParticipant(cookie):
-    user = getUser(cookie)
-    if user == None:
-        return False
-    return user.type == "participant"
-
-
 # ------------- view decorators -------------
 
 def logged_in_required(view):
     """Require that a user be logged in."""
     def wrapper(request, *args, **kwargs):
-        user = getUser(request.COOKIES)
-        # print(f"[DEBUG] User = {user} w/ cookie '{request.COOKIES['id']}'")
+        user = User.getCurrent(request)
         if user:
             return view(request, *args, **kwargs)
         else:
