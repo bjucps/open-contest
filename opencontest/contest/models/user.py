@@ -8,7 +8,9 @@ userNames = {}
 
 class User:
     def __init__(self, username: str, fullname: str, password: str, type: str, id: str = None):
-        self.id = id
+        # Use uuid4 as an id because it is hard to brute
+        # force
+        self.id = id or str(uuid4())
         if username in userNames:
             self.id = userNames[username].id
         self.username = username
@@ -29,12 +31,13 @@ class User:
         return None
     
     def save(self):
-        if self.id == None:
-            if self.username in [user.id for user in User.all()]:
-                return  # don't create duplicate user
-            self.id = self.username
+        # If a user with a username of self.username
+        # does not exists, then add it to the global
+        # data structures
+        if self.id not in [user.username for user in User.all()]:
             users[self.id] = self
             userNames[self.username] = self
+        
         usrs = [users[id].toJSON() for id in users]
         setKey("/users.json", usrs)
     
@@ -67,5 +70,8 @@ class User:
 usrs = getKey("/users.json") or []
 for usr in usrs:
     user = User(usr["username"], usr.get('fullname', usr["username"]), usr["password"], usr["type"], usr["id"])
-    users[usr["id"]] = user
-    userNames[usr["username"]] = user
+
+    # Fill data structures with id and username from class
+    # in case JSON data was overrided
+    users[user.id] = user
+    userNames[user.username] = user
