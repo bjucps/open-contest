@@ -79,7 +79,7 @@ def getSubmissions(request, *args, **kwargs):
     if not cont:
         return HttpResponse('')
 
-    user = User.get(request.COOKIES['user'])
+    user = User.get(request.COOKIES['id'])
     Submission.forEach(lambda x: submissions.append(x) if x.user.id == user.id and cont.start <= x.timestamp <= cont.end else None)
     if len(submissions) == 0:
         return HttpResponse(Page(

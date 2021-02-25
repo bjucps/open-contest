@@ -38,7 +38,7 @@ INBOX, PROCESSED, ANNOUNCEMENT = 'inbox', 'processed', 'announcements'
 
 @logged_in_required
 def displayMessages(request, *args, **kwargs):
-    user = User.get(request.COOKIES['user'])
+    user = User.get(request.COOKIES['id'])
 
     messages = []
     if INBOX in request.path:

@@ -34,7 +34,8 @@ def login(request):
         user = checkPassword(username, password)
         if user:
             resp = JsonResponse('ok', safe=False)
-            resp.set_cookie('user', user.id)
+            resp.set_cookie('id', user.id)
+            resp.set_cookie('user', user.username)
             resp.set_cookie('userType', user.type)
             resp.set_cookie('userLoginTime', time.time() * 1000)
             return resp
