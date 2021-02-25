@@ -11,7 +11,7 @@ from contest.pages.lib.htmllib import html_encode
 @logged_in_required
 def getMessages(request):
     timestamp = float(request.POST["timestamp"])
-    user = User.get(request.COOKIES['id'])
+    user = User.getCurrent(request)
     newTime = time.time() * 1000
     messages = Message.messagesSince(timestamp)
     applicable = [message.toJSON() for message in messages
@@ -29,7 +29,7 @@ def getMessages(request):
 @logged_in_required
 def sendMessage(request):
     message = Message()
-    user = User.get(request.COOKIES['id'])
+    user = User.getCurrent(request)
     message.fromUser = user
     message.message = html_encode(request.POST["message"])
     message.timestamp = time.time() * 1000

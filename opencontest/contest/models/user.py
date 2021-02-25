@@ -30,6 +30,15 @@ class User:
             return userNames[username]
         return None
     
+    @staticmethod
+    def getCurrent(request):
+        if request == None:
+            return None
+        if 'id' in request.COOKIES:
+            return User.get(request.COOKIES['id'])
+        return None
+
+
     def save(self):
         # If a user with a username of self.username
         # does not exists, then add it to the global

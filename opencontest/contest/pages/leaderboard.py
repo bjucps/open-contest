@@ -24,7 +24,7 @@ all_languages = {
 @logged_in_required
 def leaderboard(request):
     contest = Contest.getCurrent() or Contest.getPast()
-    user = User.get(request.COOKIES['id'])
+    user = User.getCurrent(request)
     if not contest:
         return HttpResponse(Page(
             h1("&nbsp;"),

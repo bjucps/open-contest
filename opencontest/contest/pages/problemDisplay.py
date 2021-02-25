@@ -82,7 +82,7 @@ def getSample(datum, num: int) -> Card:
 @logged_in_required
 def viewProblem(request, *args, **kwargs):
     problem = Problem.get(kwargs.get('id'))
-    user = User.get(request.COOKIES.get('id'))
+    user = User.getCurrent(request)
     
     contest = Contest.getCurrent()
     
@@ -127,7 +127,7 @@ def listProblems(request):
     if Contest.getCurrent():
         contest = Contest.getCurrent()
         probCards = []
-        user = User.get(request.COOKIES.get('id'))
+        user = User.getCurrent(request)
         for prob in contest.problems:            
             probCards.append(ProblemCard(prob, user))
 

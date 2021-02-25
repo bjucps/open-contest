@@ -26,7 +26,7 @@ def constructTableRows(listOfSubmissions):
 
 
 def generateLogReport(request):
-    user = User.get(request.COOKIES['id']) if request.COOKIES.get('id') else None
+    user = User.getCurrent(request) if request.COOKIES.get('id') else None
     contest = Contest.getCurrent() or Contest.getPast()
     if not contest:
         return HttpResponse(Page(
