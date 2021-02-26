@@ -10,7 +10,7 @@ class User:
     def __init__(self, username: str, fullname: str, password: str, type: str, id: str = None):
         # Use uuid4 as an id because it is hard to brute
         # force
-        self.id = id or str(uuid4())
+        self.id = id or f"{username}-{uuid4()}"
         if username in userNames:
             self.id = userNames[username].id
         self.username = username
@@ -39,11 +39,14 @@ class User:
         return None
 
 
-    def save(self):
-        # If a user with a username of self.username
-        # does not exists, then add it to the global
-        # data structures
-        if self.id not in [user.username for user in User.all()]:
+    def save(self, addUser = True):
+        
+        # Don't create another user with a duplicate username
+        if self.username in [user.username for user in User.all()]:
+            return
+        
+        # Add the user to the database if desired
+        if addUser:
             users[self.id] = self
             userNames[self.username] = self
         
@@ -66,7 +69,7 @@ class User:
     def delete(self):
         del users[self.id]
         del userNames[self.username]
-        self.save()
+        self.save(False)
     
     def isAdmin(self) -> bool:
         return self.type == "admin"
