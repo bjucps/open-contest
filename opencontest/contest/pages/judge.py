@@ -240,7 +240,7 @@ def judge(request):
 @admin_required
 def judge_submission(request, *args, **kwargs):    
     submission = Submission.get(kwargs.get('id'))
-    user = User.get(request.COOKIES['user'])
+    user = User.getCurrent(request)
     force = kwargs.get('force') == "force"
     if not submission.checkoutToJudge(user.id, force):
         return JsonResponse(f"CONFLICT:{User.get(submission.checkout).username}", safe=False)
@@ -249,7 +249,7 @@ def judge_submission(request, *args, **kwargs):
 
 def judge_submission_close(request):
     submission = Submission.get(request.POST["id"])
-    user = User.get(request.COOKIES['user'])
+    user = User.getCurrent(request)
     if submission.checkout == user.id:
         submission.checkout = None
     return JsonResponse('ok', safe=False)
@@ -320,7 +320,7 @@ def generateDiffTable(original: str, output: str) -> str:
 @admin_required
 def viewDiff(request, *args, **kwargs):
     submission = Submission.get(kwargs.get('id'))
-    user = User.get(request.COOKIES['user'])
+    user = User.getCurrent(request)
     problem = submission.problem
 
     answers = submission.readFilesForDisplay('out')
