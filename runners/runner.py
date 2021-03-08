@@ -9,12 +9,22 @@ def total_child_execution_time():
     # convert sum into seconds and return
     return (float(data[15]) + float(data[16])) / 100
 
-def runCode(testCases: int, timeLimit: int, compile: str, run: str) -> int:
+def runCode(testCases: int, timeLimit: int, compile: str, run: str, switchStdOutErr = False) -> int:
 
     os.chdir("/source")
     
+    stdout = "out/compile_out.txt"
+    stderr = "out/compile_error.txt"
+
+    # Some languages, like C# and VB, print compile errors
+    # to stderr instead of stdout
+    if switchStdOutErr:
+        temp = stdout
+        stdout = stderr
+        stderr = stdout
+
     # Compile submission
-    if os.system(f"{compile} > out/compile_out.txt 2> out/compile_error.txt") != 0:
+    if os.system(f"{compile} > {stdout} 2> {stderr}") != 0:
         print("compile_error")
         os.chdir("..")
         return 1
@@ -36,7 +46,7 @@ def runCode(testCases: int, timeLimit: int, compile: str, run: str) -> int:
             return 1
         
         # Check exit status of submission
-        with open("out/result{0}.txt".format(i), "w") as f:
+        with open(f"out/result{i}.txt", "w") as f:
             f.write("ok" if status == 0 else "runtime_error")
     
     print("ok")
