@@ -8,7 +8,7 @@ from contest.models.problem import Problem
 from contest.models.simple import getKey, setKey, deleteKey, listSubKeys
 from contest.models.user import User
 
-from opencontest.settings import OC_MAX_DISPLAY_LEN, OC_MAX_DISPLAY_LEN, OC_MAX_DISPLAY_LINES
+from opencontest.settings import OC_MAX_DISPLAY_LEN, OC_MAX_DISPLAY_LEN, OC_MAX_DISPLAY_LINES, OC_MAX_CONCURRENT_SUBMISSIONS
 
 
 lock = rwlock.RWLockWrite()
@@ -31,8 +31,7 @@ class Submission:
     STATUS_JUDGED = "Judged"
 
     # For throttling number of submissions running at once
-    MAX_CONCURRENT_SUBMISSIONS = 15
-    runningSubmissions = Semaphore(MAX_CONCURRENT_SUBMISSIONS)
+    runningSubmissions = Semaphore(OC_MAX_CONCURRENT_SUBMISSIONS)
 
     saveCallbacks = []
 
