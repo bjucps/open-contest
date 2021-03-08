@@ -1,6 +1,7 @@
 import logging
 import time
 from readerwriterlock import rwlock
+from threading import Semaphore
 
 from contest.models.contest import Contest
 from contest.models.problem import Problem
@@ -28,6 +29,10 @@ class Submission:
     # Submission status
     STATUS_REVIEW = "Review"
     STATUS_JUDGED = "Judged"
+
+    # For throttling number of submissions running at once
+    MAX_CONCURRENT_SUBMISSIONS = 15
+    runningSubmissions = Semaphore(MAX_CONCURRENT_SUBMISSIONS)
 
     saveCallbacks = []
 

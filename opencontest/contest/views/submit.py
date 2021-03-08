@@ -116,108 +116,109 @@ def runCode(sub: Submission, user: User) -> list:
     """Executes submission `sub` and returns lists of data files"""
     extension = exts[sub.language]
 
-    try:
-        shutil.rmtree(f"/tmp/{id}", ignore_errors=True)
-        os.makedirs(f"/tmp/{sub.id}", exist_ok=True)
+    with sub.runningSubmissions:
+        try:
+            shutil.rmtree(f"/tmp/{id}", ignore_errors=True)
+            os.makedirs(f"/tmp/{sub.id}", exist_ok=True)
 
-        # Copy the code over to the runner /tmp folder
-        writeFile(f"/tmp/{sub.id}/code.{extension}", sub.code)
-        
-        prob = sub.problem
-        
-        if sub.type == Submission.TYPE_TEST and not user.isAdmin():
-            numTests = prob.samples 
-        elif sub.type == Submission.TYPE_CUSTOM:
-            numTests = 1
-        else:
-            numTests = prob.tests     
-
-        # Copy the input over to the tmp folder for the runner
-        if sub.type == Submission.TYPE_CUSTOM:
-            writeFile(f"/tmp/{sub.id}/in0.txt", sub.custominput)    
-        else:
-            for i in range(numTests):
-                shutil.copyfile(f"/db/problems/{prob.id}/input/in{i}.txt", f"/tmp/{sub.id}/in{i}.txt")
-
-        # Output files will go here
-        os.makedirs(f"/tmp/{sub.id}/out", exist_ok=True)
-
-        # Run the runner
-        cmd = f"docker run --rm --network=none -m 256MB -v /tmp/{sub.id}/:/source {OC_DOCKERIMAGE_BASE}-{sub.language}-runner {numTests} {prob.timelimit} > /tmp/{sub.id}/result.txt"
-        logger.debug(cmd)
-        if os.system(cmd) != 0:
-            raise Exception("Problem testing submission with Docker: Review log")
-
-        # Check for compile error
-        if readFile(f"/tmp/{sub.id}/result.txt") == "compile_error\n":
-            sub.results = ["compile_error"]
-            sub.delete()
-            sub.compile = readFile(f"/tmp/{sub.id}/out/compile_error.txt")
-            return None, None, None, None
-
-        # Submission ran; process test results
-
-        inputs = []
-        outputs = []
-        answers = []
-        errors = []
-        results = []
-        result = "ok"
-
-        for i in range(numTests):
-            if sub.type == Submission.TYPE_CUSTOM:
-                inputs.append(sub.custominput)
-                answers.append("")
+            # Copy the code over to the runner /tmp folder
+            writeFile(f"/tmp/{sub.id}/code.{extension}", sub.code)
+            
+            prob = sub.problem
+            
+            if sub.type == Submission.TYPE_TEST and not user.isAdmin():
+                numTests = prob.samples 
+            elif sub.type == Submission.TYPE_CUSTOM:
+                numTests = 1
             else:
-                inputs.append(sub.problem.testData[i].input)
-                answers.append(readFile(f"/db/problems/{prob.id}/output/out{i}.txt"))
+                numTests = prob.tests     
 
-            errors.append(readFile(f"/tmp/{sub.id}/out/err{i}.txt"))
-            outputs.append(readFile(f"/tmp/{sub.id}/out/out{i}.txt"))
+            # Copy the input over to the tmp folder for the runner
+            if sub.type == Submission.TYPE_CUSTOM:
+                writeFile(f"/tmp/{sub.id}/in0.txt", sub.custominput)    
+            else:
+                for i in range(numTests):
+                    shutil.copyfile(f"/db/problems/{prob.id}/input/in{i}.txt", f"/tmp/{sub.id}/in{i}.txt")
 
-            anstrip = strip(answers[-1])
-            outstrip = strip(outputs[-1])
-            answerLines = anstrip.split('\n')
-            outLines = outstrip.split('\n')
+            # Output files will go here
+            os.makedirs(f"/tmp/{sub.id}/out", exist_ok=True)
 
-            res = readFile(f"/tmp/{sub.id}/out/result{i}.txt")
-            if res == None:
-                res = "tle"
-            elif res == "ok" and anstrip != outstrip:
+            # Run the runner
+            cmd = f"docker run --rm --network=none -m 256MB -v /tmp/{sub.id}/:/source {OC_DOCKERIMAGE_BASE}-{sub.language}-runner {numTests} {prob.timelimit} > /tmp/{sub.id}/result.txt"
+            logger.debug(cmd)
+            if os.system(cmd) != 0:
+                raise Exception("Problem testing submission with Docker: Review log")
+
+            # Check for compile error
+            if readFile(f"/tmp/{sub.id}/result.txt") == "compile_error\n":
+                sub.results = ["compile_error"]
+                sub.delete()
+                sub.compile = readFile(f"/tmp/{sub.id}/out/compile_error.txt")
+                return None, None, None, None
+
+            # Submission ran; process test results
+
+            inputs = []
+            outputs = []
+            answers = []
+            errors = []
+            results = []
+            result = "ok"
+
+            for i in range(numTests):
                 if sub.type == Submission.TYPE_CUSTOM:
-                    pass  # custom input cannot produce incorrect result
-                elif compareStrings(outLines, answerLines):
-                    res = "incomplete_output"
-                elif compareStrings(answerLines, outLines):
-                    res = "extra_output"
+                    inputs.append(sub.custominput)
+                    answers.append("")
                 else:
-                    res = "wrong_answer"
-            
-            results.append(res)
+                    inputs.append(sub.problem.testData[i].input)
+                    answers.append(readFile(f"/db/problems/{prob.id}/output/out{i}.txt"))
 
-            # Make result the first incorrect result
-            if res != "ok" and result == "ok":
-                result = res
+                errors.append(readFile(f"/tmp/{sub.id}/out/err{i}.txt"))
+                outputs.append(readFile(f"/tmp/{sub.id}/out/out{i}.txt"))
 
-        sub.result = result
-        if sub.result in ["ok", "runtime_error", "tle"] or user.isAdmin():
-            sub.status = Submission.STATUS_JUDGED
-            
-        sub.results = results
+                anstrip = strip(answers[-1])
+                outstrip = strip(outputs[-1])
+                answerLines = anstrip.split('\n')
+                outLines = outstrip.split('\n')
 
-        logger.debug(f"Result of testing {sub.id}: {sub}")
+                res = readFile(f"/tmp/{sub.id}/out/result{i}.txt")
+                if res == None:
+                    res = "tle"
+                elif res == "ok" and anstrip != outstrip:
+                    if sub.type == Submission.TYPE_CUSTOM:
+                        pass  # custom input cannot produce incorrect result
+                    elif compareStrings(outLines, answerLines):
+                        res = "incomplete_output"
+                    elif compareStrings(answerLines, outLines):
+                        res = "extra_output"
+                    else:
+                        res = "wrong_answer"
+                
+                results.append(res)
 
-        saveData(sub, inputs, 'in')
-        saveData(sub, outputs, 'out')
-        saveData(sub, answers, 'answer')
-        saveData(sub, errors, 'error')
-        if sub.type == Submission.TYPE_SUBMIT:
-            sub.save()
+                # Make result the first incorrect result
+                if res != "ok" and result == "ok":
+                    result = res
 
-        return inputs, outputs, answers, errors
+            sub.result = result
+            if sub.result in ["ok", "runtime_error", "tle"] or user.isAdmin():
+                sub.status = Submission.STATUS_JUDGED
+                
+            sub.results = results
 
-    finally:
-        shutil.rmtree(f"/tmp/{sub.id}", ignore_errors=True)
+            logger.debug(f"Result of testing {sub.id}: {sub}")
+
+            saveData(sub, inputs, 'in')
+            saveData(sub, outputs, 'out')
+            saveData(sub, answers, 'answer')
+            saveData(sub, errors, 'error')
+            if sub.type == Submission.TYPE_SUBMIT:
+                sub.save()
+
+            return inputs, outputs, answers, errors
+
+        finally:
+            shutil.rmtree(f"/tmp/{sub.id}", ignore_errors=True)
 
 
 # Process contestant test or submission
