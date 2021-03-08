@@ -144,7 +144,7 @@ def runCode(sub: Submission, user: User) -> list:
 
         # Run the runner
         cmd = f"docker run --rm --network=none -m 256MB -v /tmp/{sub.id}/:/source {OC_DOCKERIMAGE_BASE}-{sub.language}-runner {numTests} {prob.timelimit} > /tmp/{sub.id}/result.txt"
-        logger.debug(cmd)        
+        logger.debug(cmd)
         if os.system(cmd) != 0:
             raise Exception("Problem testing submission with Docker: Review log")
 
