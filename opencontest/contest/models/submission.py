@@ -138,7 +138,6 @@ class Submission:
         with lock.gen_wlock():
             if self.checkout == None or force:
                 self.checkout = userid
-                self.version += 1
                 return True
     
         return False        
