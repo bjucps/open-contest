@@ -45,7 +45,9 @@ def login(request):
 
 def logout(request):
     resp = HttpResponseRedirect('/login')
+    resp.set_cookie('id', 'deleted', expires='Thu, 01 Jan 1970 00:00:00 GMT;')
     resp.set_cookie('user', 'deleted', expires='Thu, 01 Jan 1970 00:00:00 GMT;')
     resp.set_cookie('userType', 'deleted', expires='Thu, 01 Jan 1970 00:00:00 GMT;')
+    resp.set_cookie('userLoginTime', 'deleted', expires='Thu, 01 Jan 1970 00:00:00 GMT;')
     return resp
 
