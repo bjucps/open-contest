@@ -34,6 +34,7 @@ icons = {
     "extra_output": "times",
     "incomplete_output": "times",
     "reject": "times",
+    "internal_error": "exclamation-triangle",
     "pending": "sync",
     "pending_review": "sync",
 }
@@ -46,6 +47,7 @@ verdict_name = {
     "extra_output": "Extra Output",
     "incomplete_output": "Incomplete Output",
     "reject": "Submission Rejected",
+    "internal_error": "Internal Error",
     "pending": "Executing ...",
     "pending_review": "Pending Review",
 }
@@ -213,6 +215,7 @@ class SubmissionRow(UIElement):
 
 class SubmissionTable(UIElement):
     def __init__(self, contest):
+        logger.warn(f"Submissions: {Submission.all()}")
         subs = sorted(
             filter(lambda sub: sub.user.type != "admin" and contest.start <= sub.timestamp <= contest.end, Submission.all()),
             key=lambda s: s.timestamp)

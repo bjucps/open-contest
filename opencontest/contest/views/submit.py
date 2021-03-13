@@ -119,6 +119,7 @@ def runCode(sub: Submission, user: User) -> list:
     """Executes submission `sub` and returns lists of data files"""
     extension = exts[sub.language]
 
+    # Use semaphore to throttle number of concurrent submissions
     with Submission.runningSubmissions:
         try:
             shutil.rmtree(f"/tmp/{id}", ignore_errors=True)
@@ -149,12 +150,26 @@ def runCode(sub: Submission, user: User) -> list:
             # Run the runner
             cmd = f"docker run --rm --network=none -m 256MB -v /tmp/{sub.id}/:/source {OC_DOCKERIMAGE_BASE}-{sub.language}-runner {numTests} {prob.timelimit} > /tmp/{sub.id}/result.txt"
             logger.debug(cmd)
-            if os.system(cmd) != 0:
-                raise Exception("Problem testing submission with Docker: Review log")
+            rc = os.system(cmd)
+
+            overall_result = readFile(f"/tmp/{sub.id}/result.txt")
+
+            if rc != 0 or not overall_result:
+                # Test failed to complete properly
+
+                logger.warn(f"Result of submission {sub.id}: rc={rc}, overall_result={overall_result}")
+
+                sub.result = "internal_error"
+                if sub.type == Submission.TYPE_SUBMIT:
+                    sub.save()
+                return [], [], [], []
+
+            logger.info("Overall result: '" + overall_result + "'")
 
             # Check for compile error
-            if readFile(f"/tmp/{sub.id}/result.txt") == "compile_error\n":
-                sub.results = ["compile_error"]
+            if overall_result == "compile_error\n":
+                logger.info("Compile error")
+                sub.result = "compile_error"
                 sub.delete()
                 sub.compile = readFile(f"/tmp/{sub.id}/out/compile_error.txt")
                 return None, None, None, None
@@ -244,7 +259,7 @@ def submit(request, *args, **kwargs):
     custominput = request.POST.get("input")
     submission = addSubmission(probId, lang, code, user, type, custominput)
     if submission.type == Submission.TYPE_TEST and not submission.problem.samples:
-        return JsonResponse({"results": "internal_error", "error": 
+        return JsonResponse({"result": "internal_error", "error": 
             "Cannot run test because no sample test cases are defined for this problem. Make sure Number of Sample Cases for this problem is at least 1."})
 
     inputs, outputs, answers, errors = runCode(submission, user)

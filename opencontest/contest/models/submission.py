@@ -58,8 +58,8 @@ class Submission:
             self.language = None
             self.code = None     # Source code
             self.type = None
-            self.results = []
-            self.result = []
+            self.results = []      # One result for each test case
+            self.result = None     # Overall result
             self.status = None     # One of Submission.STATUS_REVIEW, Submission.STATUS_JUDGED
             self.checkout = None     # id of judge that has submission checked out
             self.version = 1        # Version number for judge changes to this record
@@ -94,7 +94,11 @@ class Submission:
         }
 
     def getContestantResult(self):
-        return Submission.RESULT_PENDING_REVIEW if self.result != Submission.RESULT_PENDING and self.status == Submission.STATUS_REVIEW else self.result
+        return (Submission.RESULT_PENDING_REVIEW 
+                if self.result != Submission.RESULT_PENDING and 
+                    self.result not in ['compile_error', 'internal_error'] and
+                    self.status == Submission.STATUS_REVIEW 
+                else self.result)
 
     def getContestantIndividualResults(self):
         return [Submission.RESULT_PENDING_REVIEW if self.result != Submission.RESULT_PENDING and self.status == Submission.STATUS_REVIEW else res for res in self.results]

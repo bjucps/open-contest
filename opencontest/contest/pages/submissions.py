@@ -5,7 +5,7 @@ from contest.models.contest import Contest
 from contest.models.submission import Submission
 from contest.models.user import User
 from contest.pages.lib import Page
-from contest.pages.lib.htmllib import UIElement, h, div, code_encode, h2
+from contest.pages.lib.htmllib import UIElement, h, div, code_encode, h1, h2
 from contest.pages.judge import icons, verdict_name
 
 
@@ -77,13 +77,16 @@ def getSubmissions(request, *args, **kwargs):
     
     cont = Contest.getCurrent()
     if not cont:
-        return HttpResponse('')
+        return HttpResponse(Page(
+            h1("&nbsp;"),
+            h1("Contest is Over", cls="center")
+        ))
 
     user = User.getCurrent(request)
     Submission.forEach(lambda x: submissions.append(x) if x.user.id == user.id and cont.start <= x.timestamp <= cont.end else None)
     if len(submissions) == 0:
         return HttpResponse(Page(
-            h2("No Submissions Yet", cls="page-title"),
+            h1("No Submissions Yet", cls="page-title"),
         ))
     return HttpResponse(Page(
         h2("Your Submissions", cls="page-title"),

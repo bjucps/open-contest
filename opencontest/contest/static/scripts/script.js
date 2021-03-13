@@ -194,6 +194,7 @@ Problem page
         "runtime_error": "exclamation-triangle",
         "presentation_error": "times",
         "reject" : "times",
+        "internal_error": "exclamation-triangle",
         "pending": "sync",
         "pending_review": "sync",
     };
@@ -206,6 +207,7 @@ Problem page
         "runtime_error": "Runtime Error",
         "presentation_error": "Presentation Error",
         "reject": "Submission Rejected",
+        "internal_error": "Internal Error",
         "pending": "Executing ...",
         "pending_review": "Pending Review",
     };
@@ -215,12 +217,12 @@ Problem page
     }
 
     function showResults(sub) {
-        if (sub.results == "internal_error") {
+        if (sub.result == "internal_error") {
             $(".results.card .card-contents").html(`
                 <h3>Unexpected Error</h3>
                 <p>${sub.error}</p>
             `);
-        } else if (sub.results == "compile_error") {
+        } else if (sub.result == "compile_error") {
             $(".results.card .card-contents").html(`
                 <h3>Compile Error</h3>
                 <code>${encodeText(sub.compile)}</code>
@@ -357,7 +359,7 @@ Problem page
                 showResults(results);
             }).fail(function() {
                 enableButtons();
-                showResults({ results: 'internal_error', error: 'Unexpected problem testing your submission. Please notify the contest administrator.' });
+                showResults({ result: 'internal_error', error: 'Unexpected problem testing your submission. Please notify the contest administrator.' });
             });
         });
 
