@@ -494,7 +494,7 @@ Leaderboard Page
     tr {
         border-bottom: 1px solid #ccc;
     }
-    tr:nth-child(2n) {
+    .banded tr:nth-child(2n) {
         background-color: #f4f4f4;
     }
     td, th {
@@ -608,7 +608,7 @@ Diff Page
         border:medium;
         width: 100%;
     }
-    table.diff > td, table.diff th {
+    table.diff td, table.diff th {
         padding: 1px;
     }
     .diff_remove {

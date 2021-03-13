@@ -39,7 +39,7 @@ class Submission:
         if id != None:
             details = getKey(f"/submissions/{id}/submission.json")
             self.id = details["id"]
-            self.user = User.get(details["user"])
+            self.user = User.get(details["user"]) or User.getByName(details["user"])    # Ensures backward compatibility with older db's
             self.problem = Problem.get(details["problem"])
             self.timestamp = int(details["timestamp"])
             self.language = details["language"]

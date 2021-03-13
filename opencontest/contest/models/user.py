@@ -8,7 +8,9 @@ userNames = {}
 
 class User:
     def __init__(self, username: str, fullname: str, password: str, type: str, id: str = None):
-        self.id = id
+        # Use uuid4 as an id because it is hard to brute
+        # force
+        self.id = id or f"{username}-{uuid4()}"
         if username in userNames:
             self.id = userNames[username].id
         self.username = username
@@ -28,13 +30,26 @@ class User:
             return userNames[username]
         return None
     
-    def save(self):
-        if self.id == None:
-            if self.username in [user.id for user in User.all()]:
-                return  # don't create duplicate user
-            self.id = self.username
+    @staticmethod
+    def getCurrent(request):
+        if request == None:
+            return None
+        if 'id' in request.COOKIES:
+            return User.get(request.COOKIES['id'])
+        return None
+
+
+    def save(self, addUser = True):
+        
+        # Don't create another user with a duplicate username
+        if self.username in [user.username for user in User.all()]:
+            return
+        
+        # Add the user to the database if desired
+        if addUser:
             users[self.id] = self
             userNames[self.username] = self
+        
         usrs = [users[id].toJSON() for id in users]
         setKey("/users.json", usrs)
     
@@ -54,7 +69,7 @@ class User:
     def delete(self):
         del users[self.id]
         del userNames[self.username]
-        self.save()
+        self.save(False)
     
     def isAdmin(self) -> bool:
         return self.type == "admin"
@@ -67,5 +82,8 @@ class User:
 usrs = getKey("/users.json") or []
 for usr in usrs:
     user = User(usr["username"], usr.get('fullname', usr["username"]), usr["password"], usr["type"], usr["id"])
-    users[usr["id"]] = user
-    userNames[usr["username"]] = user
+
+    # Fill data structures with id and username from class
+    # in case JSON data was overrided
+    users[user.id] = user
+    userNames[user.username] = user
