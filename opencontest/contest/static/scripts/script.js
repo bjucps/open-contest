@@ -104,7 +104,26 @@ General page code
         if ($("#submissions").length) {
             var tf = new TableFilter("submissions", props);
             tf.init();
-            tf.setFilterValue(5, "Review");
+
+            let savedFilters = sessionStorage.getItem("judgeFilters");
+
+            if (savedFilters) {
+                savedFilters = JSON.parse(savedFilters);
+                for (let i = 0; i < savedFilters.length; ++i)
+                    tf.setFilterValue(i, savedFilters[i]);
+                
+            } else {
+                tf.setFilterValue(5, "Review");
+            }
+
+            tf.onAfterFilter = function() {
+                let arr = [];
+                for (let i = 0; i < tf.fltIds.length; ++i)
+                    arr.push($('#' + tf.fltIds[i]).val());
+
+                sessionStorage.setItem("judgeFilters", JSON.stringify(arr));
+            }
+
             tf.filter();
         }
     });
@@ -969,4 +988,9 @@ Judging Page
             })
             
         });
+    }
+
+    function resetJudgeFilter() {
+        window.sessionStorage.removeItem("judgeFilters");
+        window.location.reload();
     }
