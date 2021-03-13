@@ -294,6 +294,9 @@ def generateDiffTable(original: str, output: str) -> str:
                 output = cell
             colNo += 1
 
+        expected['style'] = "width:47%"
+        output['style'] = "width:47%"
+
         # Highlight both rows if there was a diff found
         # in both columns (a diff will have a <span>
         # child element if a change was found)

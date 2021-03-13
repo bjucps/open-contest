@@ -94,7 +94,7 @@ def leaderboard(request):
         div(cls="actions", contents=[
             h.button("Detailed Contest Report", cls="button create-message", onclick="window.location.href='/contestreport'")
         ]),
-        h.table(
+        h.table(cls="banded", contents=[
             h.thead(
                 h.tr(
                     h.th("Rank", cls="center"),
@@ -108,9 +108,9 @@ def leaderboard(request):
             h.tbody(
                 *scoresDisplay
             )
-        ),
+        ]),
         h2("Problem Summary", cls="page-title"),
-        h.table(
+        h.table(cls="banded", contents=[
             h.thead(
                 h.tr(
                     h.th("Problem", cls="center"),
@@ -121,7 +121,7 @@ def leaderboard(request):
             h.tbody(
                 *problemSummaryDisplay
             )
-        ),
+        ]),
         div(cls="align-right", contents=[
             h.br(),
             h.button("Correct Log", cls="button", onclick="window.location='/correctlog'")
@@ -269,12 +269,12 @@ def contestreport(request):
 
     return HttpResponse(Page(
         h2("DETAILED STANDINGS", cls="page-title"),
-        h.table(
+        h.table(cls="banded", contents=[
             h.thead(h.tr(*reportcols)),
             h.tbody(*detailedContestDisplay)
-        ),
+        ]),
         h2("Problem Summary", cls="page-title"),
-        h.table(
+        h.table(cls="banded", contents=[
             h.thead(
                 h.tr(
                     h.td("#"),
@@ -284,12 +284,12 @@ def contestreport(request):
                 )
             ),
             h.tbody(*problemSummaryDisplay)
-        ),
+        ]),
         h2("Language Breakdown", cls="page-title"),
-        h.table(
+        h.table(cls="banded", contents=[
             h.thead(h.tr(*lang_col)
             ),h.tbody(*LanguageDisplay)
-        ),
+        ]),
         cls='wide-content' # Use a wide format for this page
     ))
 
