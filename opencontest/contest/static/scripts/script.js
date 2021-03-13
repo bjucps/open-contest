@@ -890,7 +890,7 @@ Judging Page
                     submissionPopup(id, true);
             }
             else if (data.startsWith("CHANGES")) {
-                window.alert(`The state of the record you are about to access has changed. The window will reload to retrieve the new changes`);
+                window.alert(`The state of the record you are about to access has changed. The window will reload to retrieve the new changes.`);
                 window.location.reload();
             }
             else {
