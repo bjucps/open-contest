@@ -1,42 +1,39 @@
 #!/bin/bash
 
+# Usage: bash build.sh [--push] [ language ... ]
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 function build_image {
-    DIRECTORY=$1
-    IMAGE=$2
+    LANGUAGE=$1
 
-    # Add runner.py to current directory
-    # so Docker can build correctly
-    cp runner.py $1/runner.py
-
-    echo Building $2...
-    docker build $DIRECTORY -t $OC_DOCKERIMAGE_BASE-$IMAGE
+    echo Building $LANGUAGE...
+    docker build . -f $LANGUAGE/Dockerfile -t $OC_DOCKERIMAGE_BASE-$LANGUAGE-runner
     
-    rm $1/runner.py
 }
 
 cd $DIR
 
 source ../open-contest.config
 
-# Build Docker images
-build_image c/       c-runner
-build_image cpp/     cpp-runner
-build_image cs/      cs-runner
-build_image java/    java-runner
-build_image python3/ python3-runner
-build_image ruby/    ruby-runner
-build_image vb/      vb-runner
-
-# Push Docker images to DockerHub
-if [ "$1" == "push" ]
-then
-docker push $OC_DOCKERIMAGE_BASE-c-runner
-docker push $OC_DOCKERIMAGE_BASE-cpp-runner
-docker push $OC_DOCKERIMAGE_BASE-cs-runner
-docker push $OC_DOCKERIMAGE_BASE-java-runner
-docker push $OC_DOCKERIMAGE_BASE-python3-runner
-docker push $OC_DOCKERIMAGE_BASE-ruby-runner
-docker push $OC_DOCKERIMAGE_BASE-vb-runner
+if [ "$1" == "--push" ]; then
+    DOPUSH=1
+    shift
 fi
+
+if [ $# -eq 0 ]; then
+    echo "Rebuilding all images"
+    LANGS=*
+else
+    LANGS=$*
+fi
+
+for LANG in $LANGS
+do
+    if [ -d $LANG ]; then
+        build_image $LANG
+        if [ "$DOPUSH" = 1 ]; then
+            docker push $OC_DOCKERIMAGE_BASE-$LANG-runner
+        fi
+    fi
+done

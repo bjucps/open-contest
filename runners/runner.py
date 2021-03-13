@@ -1,13 +1,15 @@
 import os
 
-# Return that amount of CPU time the child process
+# Return amount of CPU time the child process
 # spent in user mode and system mode in seconds
 def total_child_execution_time():
     with open(f"/proc/{os.getpid()}/stat") as f:
         data = f.read().split(" ")
 
-    # convert sum into seconds and return
-    return (float(data[15]) + float(data[16])) / 100
+    # See https://man7.org/linux/man-pages/man5/procfs.5.html for more details
+    cutime = float(data[15]) # total child process CPU time in user mode
+    cstime = float(data[16]) # total child process CPU time in kernel mode
+    return (cutime + cstime) / 100
 
 def runCode(testCases: int, timeLimit: int, compile: str, run: str, switchStdOutErr = False) -> int:
 

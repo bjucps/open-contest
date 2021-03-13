@@ -116,7 +116,7 @@ def runCode(sub: Submission, user: User) -> list:
     """Executes submission `sub` and returns lists of data files"""
     extension = exts[sub.language]
 
-    with sub.runningSubmissions:
+    with Submission.runningSubmissions:
         try:
             shutil.rmtree(f"/tmp/{id}", ignore_errors=True)
             os.makedirs(f"/tmp/{sub.id}", exist_ok=True)
