@@ -1,4 +1,5 @@
 # OpenContest
+
 OpenContest is an open-source programming contest management system written in
 Python, using Docker technology. It allows judges to write problems and contest
 participants to submit solutions to those problems. 
@@ -63,53 +64,12 @@ configuration settings there.
 
 Use the web interface to create problems, a contest to hold them, and users to participate
 
-## Detailed Usage
+## How it works
+
 OpenContest runs inside a Docker container and starts other containers on the host machine to run submissions. 
 
-To setup OpenContest, you begin by creating problems (see "How to Create a Problem" below).
-Then, you create one or more contests and configure them to use the problems you have created.
 
-## How to Create a Problem
-To create a problem, follow these steps:
-1. Log in to OpenContest at localhost:8000 with the username and password provided when you started the server.
-2. Choose *Setup* in the menu.
-3. Choose *Problems*.
-4. Click *Create Problem*.
-5. Enter the details of the problem. You may use Markdown formatting for the Problem Statement, Input Format, Output Format, and Constraints.  
-    **Note**: The Description is the text shown under the problem title in the list of all problems.
-6. After saving the problem details, create test data.
-    - Click *Create Test Data*
-    - Enter input and output data
-    - Click *Add Test Data*.
-7. After creating the test data, set the number of sample cases and save the problem.
+## Documentation
 
-## How to Create a Contest
-OpenContest allows you to create multiple contests that run at different times. The most common use case for this feature is to allow for a practice round before an actual contest. To create a contest, go to Setup > Contest > Create Contest and enter the contest details. Here are some of the details:
-* Contest Info Blocks: Set this to Off if you will distribute the contest problems on paper and
-  do not want to clutter the contestant problem view with details problem descriptions, etc.
-* 
-
-After creating the contest, you can choose problems to go into the contest.
-
-Before the contest begins, the home page will show a countdown to the beginning of the contest.
-
-During the contest, the home page will show a list of problems in the contest.
-
-After the contest ends, the final leaderboard for the most recent contest will be visible.
-
-## How To Print a Problem
-OpenContest formats problems for printing so that you can print and distribute problem statement packets to contestants. To print a problem, go to the edit page for the problem, click *View Problem*, and print the page with Ctrl+P.
-![](https://contests-dev.bjucps.com/images/printproblem.png)
-
-## How To Print the User Login Information
-From the user list page, you can print the page with Ctrl+P for a list of usernames and passwords. You can then cut the paper and deliver these sheets to the contestants.
-![](https://contests-dev.bjucps.com/images/printusers.png)
-
-## Troubleshooting
-
-### When I click the "Test Code" button I don't get any feedback
-
-Make sure that the problem's Sample Test Cases count is at least 1. If 0, Run Test will silently fail.
-
-## Development Information
-To set up a development environment, view [README-devsetup.md](README-devsetup.md).
+* [User Manual](MANUAL.md)
+* [Development Guide](README-devsetup.md).]
