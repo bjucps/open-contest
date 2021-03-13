@@ -16,14 +16,14 @@ from contest.models.user import User
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'opencontest.settings')
 
-user = 'Admin'
+user = 'admin'
 
 usr = User.getByName(user)
 if usr:
     password = usr.password
 else:
     password = generatePassword()
-    usr = User(user, user, password, 'admin')
+    usr = User(user, 'Administrator', password, 'admin')
     usr.save()
 
 print(f'Admin username is "{user}".')
