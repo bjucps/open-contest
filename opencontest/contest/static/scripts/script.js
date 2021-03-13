@@ -802,6 +802,7 @@ Messages Page
         $.post("/sendMessage", {to: recipient, message: text, replyTo: replyTo}, result => {
             if (result == "ok") {
                 $("div.modal").modal("hide");
+                window.location.reload()
             } else {
                 alert(result);
             }
