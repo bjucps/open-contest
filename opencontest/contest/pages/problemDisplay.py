@@ -124,10 +124,10 @@ def viewProblem(request, *args, **kwargs):
 
 @logged_in_required
 def listProblems(request):
-    if Contest.getCurrent():
-        contest = Contest.getCurrent()
-        probCards = []
-        user = User.getCurrent(request)
+    user = User.getCurrent(request)
+    if Contest.getCurrent() or (Contest.getPast() and user.isAdmin()):
+        contest = Contest.getCurrent() or Contest.getPast()
+        probCards = []        
         for prob in contest.problems:            
             probCards.append(ProblemCard(prob, user))
 

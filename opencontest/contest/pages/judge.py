@@ -8,8 +8,12 @@ from contest.models.contest import Contest
 from contest.models.submission import Submission
 from contest.models.problem import Problem
 from contest.models.user import User
+from contest.models.status import Status
 from contest.pages.lib import Page
 from contest.pages.lib.htmllib import UIElement, h, div, code_encode, h1, h2
+
+from opencontest.settings import OC_MAX_CONCURRENT_SUBMISSIONS
+
 
 logger = logging.getLogger(__name__)
 
@@ -253,6 +257,34 @@ def judge(request):
         cls='wide-content' # Use a wide format for this page
     ))
 
+def systemStatus(request):
+    contestName = Contest.getCurrent().name if Contest.getCurrent() else "None"
+    submissionsTesting = OC_MAX_CONCURRENT_SUBMISSIONS - Submission.runningSubmissions._value
+    if Status.instance().isRejudgeInProgress():
+        progress = Status.instance().rejudgeProgress
+        problem = Problem.get(progress[0])
+        rejudgeProgress = f"Rejudged {progress[1]} of {progress[2]} submissions of {problem.title}"
+    else:
+        rejudgeProgress = "none"
+
+    return HttpResponse(Page(
+        h2("System Status", cls="page-title"),
+        h.table(
+            h.tr(
+                h.th("Current contest:"),
+                h.td(contestName)
+            ),
+            h.tr(
+                h.th("Submissions testing:"),
+                h.td(submissionsTesting)
+            ),
+            h.tr(
+                h.th("Rejudge progress:"),
+                h.td(rejudgeProgress)
+            ),
+        )
+    ))
+    
 
 @admin_required
 def judge_submission(request, *args, **kwargs):    

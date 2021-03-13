@@ -57,6 +57,7 @@ class Footer(UIElement):
         self.html = div(cls="footer", contents=[
             h2('Copyright &copy; {} by <a href="https://nathantheinventor.com" target="_blank">Nathan Collins</a> and BJU'.format(datetime.now().year)),
             div(cls="footer-links", contents=[
+                h.span(h.a("System Status", href="/status")),
                 h.span(h.a("Privacy Policy", href="/privacy", target="_blank")),
                 h.span(h.a("About", href="/about", target="_blank")),
                 h.span(h.a("FAQs", href="/faqs", target="_blank"))

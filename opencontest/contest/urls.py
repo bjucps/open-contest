@@ -1,7 +1,7 @@
 from django.urls import path
 
 from contest.pages.contests import listContests, editContest
-from contest.pages.judge import judge, judge_submission, judge_submission_close, viewDiff
+from contest.pages.judge import judge, judge_submission, judge_submission_close, viewDiff, systemStatus
 from contest.pages.leaderboard import leaderboard, contestreport
 from contest.pages.messages import displayMessages
 from contest.pages.problemDisplay import listProblems, viewProblem
@@ -25,6 +25,7 @@ urlpatterns = [
     path('faqs', faqs, name='faqs'),
     path('about', about, name='about'),
     path('correctlog', generateLogReport, name='generateLogReport'),
+    path('status', systemStatus, name='systemStatus'),
 
     # logged in required
     path('', root, name='root'),

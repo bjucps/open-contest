@@ -22,11 +22,10 @@ class Contest:
             self.end = int(details["end"])
             self.scoreboardOff = int(details.get("scoreboardOff", self.end))
             self.showProblInfoBlocks = details.get("showProblInfoBlocks","Off")
-            self.problems = [Problem.get(id) for id in details["problems"]]
-            
-            # Note: must use str.lower() to compare with "true"
+            self.problems = [Problem.get(id) for id in details["problems"]]            
             self.tieBreaker = str(details.get("tieBreaker", "")).lower() == "true"              # True = sample correct breaks ties
             self.displayFullname = str(details.get("displayFullname", "")).lower() == "true"    # True = full names displayed in reports
+            
 
         else:
             self.id = None
@@ -38,6 +37,8 @@ class Contest:
             self.problems = None
             self.tieBreaker = False
             self.displayFullname = False
+
+        
 
     @staticmethod
     def get(id: uuid4):

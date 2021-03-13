@@ -7,6 +7,7 @@ import base64
 import json
 import io
 import traceback
+from threading import Thread
 
 from uuid import uuid4
 from zipfile import ZipFile
@@ -18,6 +19,7 @@ from contest.models.problem import Problem
 from contest.models.submission import Submission
 from contest.models.contest import Contest
 from contest.models.user import User
+from contest.models.status import Status
 
 from opencontest.settings import OC_MAX_DISPLAY_LEN, OC_MAX_OUTPUT_LEN, OC_DOCKERIMAGE_BASE
 
@@ -288,19 +290,38 @@ def rejudge(request):
     return JsonResponse(submission.result, safe=False)
 
 
+class RejudgeThread(Thread):
+    def __init__(self, user, subsToRejudge):
+        super().__init__()
+        self.user = user
+        self.subsToRejudge = subsToRejudge
+
+    def run(self):
+        try:            
+            numSubmissions = 0
+            for sub in self.subsToRejudge:
+                Status.instance().updateRejudgeProgress(numSubmissions)
+                runCode(sub, self.user)
+                numSubmissions += 1
+        finally:
+            Status.instance().endRejudge()
+
 @admin_required
 def rejudgeAll(request):
     """Ajax method: Rejudge all submissions for problem `id`"""
+
     user = User.getCurrent(request)
     ctime = time.time() * 1000
     id = request.POST["id"]
-    numSubmissions = 0
-    for sub in Submission.all():
-        if sub.problem.id == id and sub.timestamp < ctime and sub.result != 'reject':
-            runCode(sub, user)
-            numSubmissions += 1
-    return JsonResponse(f"Rejudged {numSubmissions} submissions", safe=False)
 
+    subsToRejudge = [sub for sub in Submission.all() if sub.problem.id == id and sub.timestamp < ctime and sub.result != 'reject']
+    if not Status.instance().startRejudge(id, subsToRejudge):
+        return JsonResponse("Another rejudge all is still progress. See System Status below to monitor progress.", safe=False)
+
+    RejudgeThread(user, subsToRejudge).start()
+
+    return JsonResponse("Rejudge started. Click System Status below to monitor progress.", safe=False)
+   
 
 # Create and return zip of submission data
 @admin_required
