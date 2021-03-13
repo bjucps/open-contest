@@ -16,6 +16,7 @@ from django.http import JsonResponse
 from contest.auth import logged_in_required, admin_required
 from contest.models.problem import Problem
 from contest.models.submission import Submission
+from contest.models.contest import Contest
 from contest.models.user import User
 
 from opencontest.settings import OC_MAX_DISPLAY_LEN, OC_MAX_OUTPUT_LEN, OC_DOCKERIMAGE_BASE
@@ -165,6 +166,7 @@ def runCode(sub: Submission, user: User) -> list:
             results = []
             result = "ok"
 
+            all_samples_correct = True
             for i in range(numTests):
                 if sub.type == Submission.TYPE_CUSTOM:
                     inputs.append(sub.custominput)
@@ -200,8 +202,16 @@ def runCode(sub: Submission, user: User) -> list:
                 if res != "ok" and result == "ok":
                     result = res
 
+                if i < prob.samples and res != "ok":
+                    all_samples_correct = False
+
+            may_autojudge = True
             sub.result = result
-            if sub.result in ["ok", "runtime_error", "tle"] or user.isAdmin():
+            if Contest.getCurrent():
+                if Contest.getCurrent().tieBreaker and all_samples_correct and sub.result in ["runtime_error", "tle"]:
+                    # Force review of submissions where all sample tests were correct if samples break ties
+                    may_autojudge = False
+            if sub.result == "ok" or (may_autojudge and sub.result in ["runtime_error", "tle"]) or user.isAdmin():
                 sub.status = Submission.STATUS_JUDGED
                 
             sub.results = results
@@ -231,6 +241,10 @@ def submit(request, *args, **kwargs):
     type = request.POST["type"]    # Submission.TYPE_*
     custominput = request.POST.get("input")
     submission = addSubmission(probId, lang, code, user, type, custominput)
+    if submission.type == Submission.TYPE_TEST and not submission.problem.samples:
+        return JsonResponse({"results": "internal_error", "error": 
+            "Cannot run test because no sample test cases are defined for this problem. Make sure Number of Sample Cases for this problem is at least 1."})
+
     inputs, outputs, answers, errors = runCode(submission, user)
     response = submission.toJSON()
     if (submission.type == Submission.TYPE_SUBMIT or
