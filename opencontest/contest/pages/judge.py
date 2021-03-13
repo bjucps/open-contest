@@ -246,6 +246,9 @@ def judge(request):
         ))
     return HttpResponse(Page(
         h2("Judge Submissions", cls="page-title judge-width"),
+        div(cls="actions", contents=[
+             h.button("Reset Filter", cls="button", onclick="resetJudgeFilter()"),
+        ]),
         div(id="judge-table", cls="judge-width", contents=[
             SubmissionTable(cont)
         ]),
