@@ -119,7 +119,7 @@ class SubmissionCard(UIElement):
     def __init__(self, submission: Submission, user, force):
         subTime = submission.timestamp
         probName = submission.problem.title
-        cls = "gray" if submission.status == Submission.STATUS_REVIEW else "red" if submission.result != "ok" else ""
+        cls = "red" if submission.result != "ok" else ""
         self.html = div(cls="modal-content", contents=[
             div(cls=f"modal-header {cls}", contents=[
                 h.h5(
@@ -177,7 +177,7 @@ class SubmissionRow(UIElement):
         self.html = h.tr(
             h.td(sub.user.username),
             h.td(sub.problem.title),
-            h.td(cls='time-format', contents=sub.timestamp),
+            h.td(sub.id), # cls='time-format', contents=sub.timestamp
             h.td(sub.language),
             h.td(
                 h.i("&nbsp;", cls=f"fa fa-{icons.get(sub.result)}"),
@@ -199,9 +199,9 @@ class SubmissionTable(UIElement):
         self.html = h.table(
             h.thead(
                 h.tr(
-                    h.th("Name"),
+                    h.th("Contestant"),
                     h.th("Problem"),
-                    h.th("Time"),
+                    h.th("Id"),
                     h.th("Language"),
                     h.th("Result"),
                     h.th("Status"),

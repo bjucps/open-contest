@@ -889,8 +889,19 @@ Judging Page
                     submissionPopup(id, true);
             }
             else {
+                let activeTab;
+
                 $(".modal-dialog").html(data);
                 $(".result-tabs").tabs();
+                // Select the first tab with an error report
+                $('.result-tabs a').each( (i, itm) => {
+                    if ($('i', itm).attr('title') != 'Accepted' && activeTab == undefined) {
+                        activeTab = i;
+                    }
+                });
+                if (activeTab != undefined) {
+                    $('.result-tabs').tabs( 'option', 'active', activeTab);
+                }
                 fixFormatting();
 
                 $(".modal").modal().click(() => $.post("/judgeSubmissionClose", {id: id, version: $("#version").val()} ));
