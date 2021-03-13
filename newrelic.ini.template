@@ -27,7 +27,7 @@
 # You must specify the license key associated with your New
 # Relic account. This key binds the Python Agent's data to your
 # account in the New Relic service.
-license_key = 37cd5b84eac15d1e5d9f615d412d4a47c9c0NRAL
+license_key = YOUR-NEW-RELIC-LICENSE-KEY-HERE
 
 # The application name. Set this to be the name of your
 # application as you would like it to show up in New Relic UI.
