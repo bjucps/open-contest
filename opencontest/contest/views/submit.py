@@ -231,6 +231,10 @@ def submit(request, *args, **kwargs):
     type = request.POST["type"]    # Submission.TYPE_*
     custominput = request.POST.get("input")
     submission = addSubmission(probId, lang, code, user, type, custominput)
+    if submission.type == Submission.TYPE_TEST and not submission.problem.samples:
+        return JsonResponse({"results": "internal_error", "error": 
+            "Cannot run test because no sample test cases are defined for this problem. Make sure Number of Sample Cases for this problem is at least 1."})
+
     inputs, outputs, answers, errors = runCode(submission, user)
     response = submission.toJSON()
     if (submission.type == Submission.TYPE_SUBMIT or
