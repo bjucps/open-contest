@@ -183,10 +183,13 @@ class SubmissionRow(UIElement):
                 h.i("&nbsp;", cls=f"fa fa-{icons.get(sub.result)}"),
                 h.span(verdict_name.get(sub.result))
             ),
-            h.td(sub.status),
+            h.td(contents=[
+                sub.status,
+                h.p(sub.version, id=f"{sub.id}-version", hidden=True)
+            ]),
             h.td(checkoutUser.username if checkoutUser is not None else "None"),
             id=sub.id,
-            cls="submit-row"
+            cls="submit-row",
         )
 
 
@@ -241,8 +244,11 @@ def judge(request):
 def judge_submission(request, *args, **kwargs):    
     submission = Submission.get(kwargs.get('id'))
     user = User.getCurrent(request)
+    version = int(request.POST["version"])
     force = kwargs.get('force') == "force"
-    if not submission.checkoutToJudge(user.id, force):
+    if submission.version != version:
+        return JsonResponse(f"CHANGES", safe=False)
+    elif not submission.checkoutToJudge(user.id, force):
         return JsonResponse(f"CONFLICT:{User.get(submission.checkout).username}", safe=False)
     return HttpResponse(SubmissionCard(submission, user, force))
 
