@@ -21,7 +21,6 @@ all_languages = {
 }
 
 
-@logged_in_required
 def leaderboard(request):
     contest = Contest.getCurrent() or Contest.getPast()
     user = User.getCurrent(request)
@@ -30,7 +29,7 @@ def leaderboard(request):
             h1("&nbsp;"),
             h1("No Contest Available", cls="center")
         ))
-    elif contest.scoreboardOff <= time.time() * 1000 and not user.isAdmin():
+    elif contest.isScoreboardOff(user):
         return HttpResponse(Page(
             h1("&nbsp;"),
             h1("Scoreboard is off.", cls="center")
@@ -125,19 +124,25 @@ def leaderboard(request):
         div(cls="align-right", contents=[
             h.br(),
             h.button("Correct Log", cls="button", onclick="window.location='/correctlog'")
-        ] if user.isAdmin() else []
+        ] if user and user.isAdmin() else []
         )
     ))
 
 
 def contestreport(request):
     contest = Contest.getCurrent() or Contest.getPast()
+    user = User.getCurrent(request)
     if not contest:
         return HttpResponse(Page(
             h1("&nbsp;"),
             h1("No Contest Available", cls="center")
         ))
-    
+    elif contest.isScoreboardOff(user):
+        return HttpResponse(Page(
+            h1("&nbsp;"),
+            h1("Scoreboard is off.", cls="center")
+        ))
+
     start = contest.start
     end = contest.end
     problemSummaryreport = []

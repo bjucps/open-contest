@@ -132,6 +132,10 @@ class Contest:
         with lock.gen_rlock():
             return [contests[id] for id in contests]
 
+    def isScoreboardOff(self, user):
+        '''returns True if the scoreboardOff time has passed and the user is not an administrator'''
+        
+        return self.scoreboardOff <= time.time() * 1000 and (not user or not user.isAdmin())
 
 with lock.gen_wlock():
     for id in listSubKeys("/contests"):

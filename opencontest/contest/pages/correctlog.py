@@ -33,7 +33,7 @@ def generateLogReport(request):
             h1("&nbsp;"),
             h1("No Contest Available", cls="center")
         ))
-    elif contest.scoreboardOff <= time.time() * 1000 and (not user or not user.isAdmin()):
+    elif contest.isScoreboardOff(user):
         return HttpResponse(Page(
             h1("&nbsp;"),
             h1("Scoreboard is off.", cls="center")
