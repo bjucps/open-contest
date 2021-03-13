@@ -86,7 +86,9 @@ class TestCaseData(UIElement):
         num, input, output, error, answer = x
         if input == None: input = "" 
         if output == None: output = "" 
-        self.html = div(id=f"tabs-{sub.id}-{num}", contents=[
+        if error == None: error = ""
+        
+        contents=[
             div(cls="row", id="judge-viewDiffButton", contents=[
                 div(cls="col-12", contents=[
                     h.button(
@@ -112,7 +114,19 @@ class TestCaseData(UIElement):
                     h.code(code_encode(answer))
                 ])
             ]),
-        ])
+        ]
+
+        if error != "":
+            contents.append(
+                div(cls="row", contents=[
+                    div(cls="col-12", contents=[
+                        h.h4("Standard Error"),
+                        h.code(code_encode(error))
+                    ])
+                ]),
+            )
+
+        self.html = div(id=f"tabs-{sub.id}-{num}", contents=contents)
 
 
 class SubmissionCard(UIElement):
