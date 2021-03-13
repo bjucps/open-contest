@@ -10,4 +10,5 @@ RUN apt-get update && apt-get install -y python3
 #     apt-get update && \
 #     apt-get -y install mono-vbnc
 COPY main.py /main.py
+COPY runner.py /runner.py
 ENTRYPOINT ["python3", "main.py"]

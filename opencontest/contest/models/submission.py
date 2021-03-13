@@ -1,13 +1,14 @@
 import logging
 import time
 from readerwriterlock import rwlock
+from threading import Semaphore
 
 from contest.models.contest import Contest
 from contest.models.problem import Problem
 from contest.models.simple import getKey, setKey, deleteKey, listSubKeys
 from contest.models.user import User
 
-from opencontest.settings import OC_MAX_DISPLAY_LEN, OC_MAX_DISPLAY_LEN, OC_MAX_DISPLAY_LINES
+from opencontest.settings import OC_MAX_DISPLAY_LEN, OC_MAX_DISPLAY_LEN, OC_MAX_DISPLAY_LINES, OC_MAX_CONCURRENT_SUBMISSIONS
 
 
 lock = rwlock.RWLockWrite()
@@ -28,6 +29,9 @@ class Submission:
     # Submission status
     STATUS_REVIEW = "Review"
     STATUS_JUDGED = "Judged"
+
+    # For throttling number of submissions running at once
+    runningSubmissions = Semaphore(OC_MAX_CONCURRENT_SUBMISSIONS)
 
     saveCallbacks = []
 

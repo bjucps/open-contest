@@ -6,9 +6,14 @@ function build_image {
     DIRECTORY=$1
     IMAGE=$2
 
+    # Add runner.py to current directory
+    # so Docker can build correctly
+    cp runner.py $1/runner.py
+
     echo Building $2...
     docker build $DIRECTORY -t $OC_DOCKERIMAGE_BASE-$IMAGE
-
+    
+    rm $1/runner.py
 }
 
 cd $DIR

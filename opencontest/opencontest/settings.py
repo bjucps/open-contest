@@ -26,6 +26,8 @@ OC_MAX_OUTPUT_LEN = int(os.environ.get('OC_MAX_OUTPUT_LEN', 10000000))    # (byt
 OC_MAX_DISPLAY_LEN = int(os.environ.get('OC_MAX_DISPLAY_LEN', 50000))     # (bytes) Submission output larger than this is not displayed
 OC_MAX_DISPLAY_LINES = int(os.environ.get('OC_MAX_DISPLAY_LINES', 300))   # (lines) Submission output having more lines than this is not displayed
 OC_DOCKERIMAGE_BASE = os.environ.get('OC_DOCKERIMAGE_BASE', 'bjucps/open-contest')
+# Maximum submissions to run at once
+OC_MAX_CONCURRENT_SUBMISSIONS = int(os.environ.get("OC_MAX_CONCURRENT_SUBMISSIONS", 15))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '0oqd#=9^s2r3q9*43=4#d0_n8f5-#=lurr9x!^8(-45+jclrkl'
