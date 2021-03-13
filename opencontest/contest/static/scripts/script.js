@@ -881,12 +881,17 @@ Judging Page
     }
 
     function submissionPopup(id, force) {
+        var version = $(`#${id}-version`).text();
         var url = `/judgeSubmission/${id}` + (force ? "/force" : "");
-        $.post(url, {}, data => {
+        $.post(url, {version: version}, data => {
             if (data.startsWith("CONFLICT") && !force) {
                 var otherJudge = data.slice(data.indexOf(":")+1, data.length);
                 if (window.confirm(`${otherJudge} is already reviewing this submission. Do you want to override with your review?`))
                     submissionPopup(id, true);
+            }
+            else if (data.startsWith("CHANGES")) {
+                window.alert(`The state of the record you are about to access has changed. The window will reload to retrieve the new changes.`);
+                window.location.reload();
             }
             else {
                 $(".modal-dialog").html(data);
