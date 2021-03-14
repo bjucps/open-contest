@@ -41,11 +41,12 @@ def about(request):
         <li>Ryan Longacre and Levi Lohmeyer contributed bug fixes.</li>
         <li>Zac Hayes implemented the judge review queue.</li>
         <li>Robert Meyer contributed the test with custom input feature.</li>
-        <li>Cole Stegall contributed the judge diff view.</li>
+        <li>Cole Stegall contributed the initial judge diff view.</li>
         <li>Tim Kephart enhanced the autojudge and contributed the submission download feature.</li>
         <li>Michael Bruno implemented per-problem time limits.</li>
         <li>Michael Johannes implemented configurable problem information blocks.</li>
-        <li>Heather East ported the system to the Django framework.</li>
+        <li>Heather East Duke ported the system to the Django framework.</li>
+        <li>Caedmon Evans improved the judge diff view and made several other enhancements.</li>
         </ul>
         """)
     ))
