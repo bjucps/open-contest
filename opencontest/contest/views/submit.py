@@ -223,12 +223,16 @@ def runCode(sub: Submission, user: User) -> list:
                     all_samples_correct = False
 
             may_autojudge = True
-            sub.result = result
+            if res == "wrong_answer" and sub.result == "presentation_error":
+                # During a rejudge, do not replace "presentation_error" with "wrong_answer"
+                pass
+            else:
+                sub.result = result
             if Contest.getCurrent():
                 if Contest.getCurrent().tieBreaker and all_samples_correct and sub.result in ["runtime_error", "tle"]:
                     # Force review of submissions where all sample tests were correct if samples break ties
                     may_autojudge = False
-            if sub.result == "ok" or (may_autojudge and sub.result in ["runtime_error", "tle"]) or user.isAdmin():
+            if sub.result == "ok" or (may_autojudge and sub.result in ["runtime_error", "tle"]):
                 sub.status = Submission.STATUS_JUDGED
                 
             sub.results = results
