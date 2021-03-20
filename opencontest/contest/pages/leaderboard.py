@@ -337,11 +337,15 @@ def score(submissions: list, contest: Contest, problemSummary) -> tuple:
         
         for sub in subs:
             attempts += 1
-            for res in sub.results[:sub.problem.samples]:
-                if res != "ok":
-                    break
-            else:
-                sampleSolved = True
+
+            # If submission not rejected, check to see if the submission was correct for sample data
+            if sub.result != "reject":
+                for res in sub.results[:sub.problem.samples]:
+                    if res != "ok":
+                        break
+                else:
+                    sampleSolved = True
+
             if sub.result != "ok":
                 # Unsuccessful submissions count for 20 penalty points
                 # But only if the problem is eventually solved
