@@ -228,11 +228,13 @@ def runCode(sub: Submission, user: User) -> list:
                 pass
             else:
                 sub.result = result
+
             if Contest.getCurrent():
                 if Contest.getCurrent().tieBreaker and all_samples_correct and sub.result in ["runtime_error", "tle"]:
                     # Force review of submissions where all sample tests were correct if samples break ties
                     may_autojudge = False
-            if sub.result == "ok" or (may_autojudge and sub.result in ["runtime_error", "tle"]):
+                    
+            if sub.result == "ok" or sub.type == Submission.TYPE_TEST or (may_autojudge and sub.result in ["runtime_error", "tle"]):
                 sub.status = Submission.STATUS_JUDGED
                 
             sub.results = results
