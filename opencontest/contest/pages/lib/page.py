@@ -1,13 +1,20 @@
 from datetime import datetime
 import time
+import calendar
 from uuid import uuid4
 
 from contest.models.contest import Contest
 from contest.pages.lib.htmllib import UIElement, div, h1, a, h2, h, head, body
 
+from opencontest.settings import OC_STATIC_CACHE_SECS
 
-def uuid():
-    return str(uuid4())
+def cachecontrol():
+    secs_since_epoch = int(calendar.timegm(time.gmtime()))
+    if OC_STATIC_CACHE_SECS:
+        return str(int(secs_since_epoch / OC_STATIC_CACHE_SECS))
+    else:
+        # Prevent caching by generating a unique uuid
+        return str(uuid4())
 
 
 class Header(UIElement):
@@ -76,14 +83,14 @@ class Page(UIElement):
                 h.link(rel="stylesheet", href="/static/lib/bootstrap/css/bootstrap.min.css", type="text/css"),
                 h.link(rel="stylesheet", href="/static/lib/jqueryui/jquery-ui.min.css", type="text/css"),
                 h.link(rel="stylesheet", href="/static/lib/simplemde/simplemde.min.css", type="text/css"),
-                h.link(rel="stylesheet", href="/static/styles/style.css?" + uuid(), type="text/css"),
+                h.link(rel="stylesheet", href="/static/styles/style.css?" + cachecontrol(), type="text/css"),
                 h.link(rel="shortcut icon", href="/static/favicon.ico"),
                 h.script(src="/static/lib/jquery/jquery.min.js"),
                 h.script(src="/static/lib/bootstrap/js/bootstrap.min.js"),
                 h.script(src="/static/lib/jqueryui/jquery-ui.min.js"),
                 h.script(src="/static/lib/ace/ace.js"),
                 h.script(src="/static/lib/simplemde/simplemde.min.js"),
-                h.script(src="/static/scripts/script.js?" + uuid()),
+                h.script(src="/static/scripts/script.js?" + cachecontrol()),
                 h.script(src="/static/lib/tablefilter/tablefilter.js"),
                 h.script(src="/static/lib/FileSaver.min.js"),
             ),

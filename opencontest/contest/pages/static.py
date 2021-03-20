@@ -1,8 +1,10 @@
 from django.http import HttpResponse
 
+from uuid import uuid4
+
 from contest.auth import admin_required
 from contest.pages.lib.htmllib import UIElement, div, h, h2, h1
-from contest.pages.lib.page import uuid, Page, Card
+from contest.pages.lib.page import Page, Card
 
 
 @admin_required
@@ -17,7 +19,7 @@ def setup(request, *args, **kwargs):
 
 class FAQ(UIElement):
     def __init__(self, q, a):
-        id = str(uuid())
+        id = str(uuid4())
         self.html = div(
             h.h4(q, cls="qa-question collapsed", **{"data-toggle": "collapse", "data-target": f"#qa-{id}"}),
             div(a, id=f"qa-{id}", cls="collapse"),
