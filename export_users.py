@@ -14,4 +14,4 @@ with open(os.path.join(db_path, 'users.json')) as f:
     users = json.loads(f.read())
 
 for user in users:
-    print(f"{user['username']},{user['password']}")
+    print(f"{user['username']},{user['fullname']},{user['password']}")
