@@ -25,6 +25,7 @@ class Submission:
     RESULT_PENDING = "pending"
     RESULT_PENDING_REVIEW = "pending_review"
     RESULT_REJECT = "reject"
+    RESULT_INTERNAL_ERROR = "internal_error"
 
     # Submission status
     STATUS_REVIEW = "Review"
@@ -234,5 +235,5 @@ with lock.gen_wlock():
     for id in listSubKeys("/submissions"):
         sub = Submission(id)
         if sub.result == Submission.RESULT_PENDING:
-            sub.result = Submission.RESULT_REJECT
+            sub.result = Submission.RESULT_INTERNAL_ERROR
         submissions[id] = sub

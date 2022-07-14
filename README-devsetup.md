@@ -32,6 +32,13 @@ The following instructions have been tested in an Ubuntu 18.04 environment.
    cp -r ~/open-contest/test/db ~
    ```
 
+1. Copy the open-contest.config file to the database directory and set
+   the OC_STATIC_CACHE_SECS=0 to prevent caching of style.css and script.js
+   during development:
+   ```
+   cp ~/open-contest/open-contest.config ~/db
+   ```
+
 1. To start the contest server running, execute
    ```
    ~/open-contest/launch.sh --dev -p 8000 --fg --log-stdout 

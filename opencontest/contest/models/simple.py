@@ -13,11 +13,11 @@ def ensureExists(file: str, isDir: bool = False):
             os.mkdir(cur)
 
 
-def getKey(key: str) -> dict:
+def getKey(key: str, try_decode=True) -> dict:
     try:
         with open("../db" + key, "r") as f:
             s = f.read()
-            if s[0] in ("[", "{"):
+            if try_decode and s[0] in ("[", "{"):
                 return json.loads(s)
             return s
     except Exception as e:
