@@ -63,11 +63,13 @@ def leaderboard(request):
     scores = sorted(scores, key=lambda score: score[1] * 1000000000 + score[2] * 10000000 - score[3], reverse=True)
     
     ranks = [i + 1 for i in range(len(scores))]
-    for i in range(1, len(scores)):
+    rank = 1
+    for i in range(len(scores)):
         u1 = scores[i]
-        u2 = scores[i - 1]
-        if (u1[1], u1[2], u1[3]) == (u2[1], u2[2], u2[3]):
-            ranks[i] = ranks[i - 1]
+        u2 = scores[i - 1] if i > 0 else ('', -1, -1, -1, -1)
+        ranks[i] = rank
+        if (u1[1], u1[2], u1[3]) != (u2[1], u2[2], u2[3]):
+            rank += 1
     
     scoresDisplay = []
     for (name, solved, samples, points, attempts), rank in zip(scores, ranks):
