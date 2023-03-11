@@ -1,4 +1,4 @@
-FROM python:3.8-buster
+FROM python:3.10-buster
 RUN apt-get update 
 
 COPY python3/main.py /main.py

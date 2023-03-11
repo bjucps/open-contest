@@ -1,16 +1,17 @@
 # Development Setup
 
-The following instructions have been tested in an Ubuntu 18.04 environment.
+The following instructions have been tested in an Ubuntu 22.04 environment.
 
-1. Install Docker:
+1. Install Docker and create a user account:
    ```
-   sudo apt install docker.io
+   apt install -y docker.io
+   useradd -m -s /bin/bash ubuntu
    ```
 
 1. Execute the following to add the current user to the docker group
    so that docker commands can be executed without using sudo:
    ```
-   sudo usermod -a -G docker $USER
+   sudo usermod -a -G docker ubuntu
    ```
    Logout, then login to make the change take effect.
 
@@ -22,7 +23,7 @@ The following instructions have been tested in an Ubuntu 18.04 environment.
 1. Create the Docker images needed for development:
    ```
    docker build -t bjucps/open-contest ~/open-contest/opencontest
-   cd ~/open-contest/contest/runners
+   cd ~/open-contest/runners
    bash build.sh
    ```
 
