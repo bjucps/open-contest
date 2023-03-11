@@ -13,5 +13,6 @@ db_path = sys.argv[1]
 with open(os.path.join(db_path, 'users.json')) as f:
     users = json.loads(f.read())
 
+print("Username,Team,Password")
 for user in users:
     print(f"{user['username']},{user['password']}")
