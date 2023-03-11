@@ -23,7 +23,7 @@ participants to submit solutions to those problems.
   handles scenarios where multiple judges attempt to check out the same submission from the
   submission queue for judging.
 
-## Quick Start for Ubuntu 18.04
+## Quick Start for Ubuntu 22
 
 Execute the following to install Docker:
 ```
