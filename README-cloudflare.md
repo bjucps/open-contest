@@ -3,7 +3,7 @@
 The following procedure will enable Cloudflare integration, so that when the server boots
 it automatically registers its IP address with Cloudflare:
 
-Create /home/ubuntu/cloudflare.config:
+Create /home/cms/cloudflare.config:
 
 ```
 cloudflare_auth_email=(Cloudflare login email address)
