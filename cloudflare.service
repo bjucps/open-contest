@@ -3,8 +3,8 @@ Description=Cloudflare IP update
 After=network.target 
 
 [Service]
-EnvironmentFile=/home/ubuntu/cloudflare.config
-ExecStart=/bin/bash /home/ubuntu/open-contest/cloudflare.sh
+EnvironmentFile=/home/cms/cloudflare.config
+ExecStart=/bin/bash /home/cms/open-contest/cloudflare.sh
 Type=simple
 
 [Install]
