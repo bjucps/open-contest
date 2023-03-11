@@ -14,8 +14,8 @@ class Datum:
         self.output = output
     
     def get(id: str, num: int):
-        input = getKey(f"/problems/{id}/input/in{num}.txt")
-        output = getKey(f"/problems/{id}/output/out{num}.txt")
+        input = getKey(f"/problems/{id}/input/in{num}.txt", False)
+        output = getKey(f"/problems/{id}/output/out{num}.txt", False)
         return Datum(input, output)
     
     def toJSON(self):
