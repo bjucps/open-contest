@@ -1,4 +1,4 @@
-FROM python:3.10-buster
+FROM python:3.11-bookworm
 RUN apt-get update 
 
 COPY python3/main.py /main.py
