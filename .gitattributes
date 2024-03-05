@@ -1,0 +1,5 @@
+* text=auto
+
+# Ensure that shell scripts are LF terminated
+.sh  text eol=lf
+.config  text eol=lf

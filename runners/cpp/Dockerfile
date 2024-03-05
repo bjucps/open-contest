@@ -1,6 +1,4 @@
-FROM python:3.8-buster
-RUN apt-get update 
-RUN apt-get install -y g++
+FROM gcc:latest
 
 COPY cpp/main.py /main.py
 COPY runner.py /runner.py
