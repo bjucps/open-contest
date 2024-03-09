@@ -523,7 +523,7 @@ Contest page
         $(".problem-cards .card").each((_, card) => {
             var prob = "";
             for (var cls of $(card).attr("class").split(" ")) {
-                if (uuid.test(cls)) {
+                if (uuid.test(cls) || cls.startsWith('prob-')) {
                     prob = cls;
                     break;
                 }

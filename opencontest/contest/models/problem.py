@@ -14,8 +14,8 @@ class Datum:
         self.output = output
     
     def get(id: str, num: int):
-        input = getKey(f"/problems/{id}/input/in{num}.txt", False)
-        output = getKey(f"/problems/{id}/output/out{num}.txt", False)
+        input = getKey(f"/problems/{id}/input/in{num}.txt", False).replace("\r", "")
+        output = getKey(f"/problems/{id}/output/out{num}.txt", False).replace("\r", "")
         return Datum(input, output)
     
     def toJSON(self):
@@ -61,10 +61,14 @@ class Problem:
     @staticmethod
     def get(id: uuid4):
         id: str = str(id)
+
+        if not id:
+            return None
+            
         with lock.gen_rlock():
             if id in problems:
                 return problems[id]
-            return None
+            raise Exception(f"No problem with id '{id}' in the database")
     
     def toJSONSimple(self):
         return {

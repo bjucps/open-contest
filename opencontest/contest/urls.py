@@ -32,7 +32,8 @@ urlpatterns = [
     path('logout', logout, name='logout'),
 
     path('problems', listProblems, name='listProblems'),
-    path('problems/<uuid:id>', viewProblem, name='viewProblem'),
+    path('problems/new', newProblem, name='newProblem'),
+    path('problems/<str:id>', viewProblem, name='viewProblem'),
 
     path('getMessages', getMessages, name='getMessages'),
     path('sendMessage', sendMessage, name='sendMessage'),
@@ -58,7 +59,6 @@ urlpatterns = [
     path('deleteContest', deleteContest, name='deleteContest'),
 
     path('problems_mgmt', listProblemsAdmin, name='adminListProblems'),
-    path('problems/new', newProblem, name='newProblem'),
     path('problems/<str:id>/edit', editProblem, name='editProblem'),
     path('editProblem', createProblem, name='anotherEditProblem'),
     path('deleteProblem', deleteProblem, name='deleteProblem'),

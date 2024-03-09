@@ -65,7 +65,7 @@ def readFile(path):
             for i, value in enumerate(data):
                 if value == 10 or (value <= 127 and chr(value).isprintable()):
                     pass  
-                elif value == '\r':
+                elif value == 13:
                     data[i] = 32  # ignore carriage returns
                 else:
                     data[i] = 63  # other characters map to ?
@@ -142,7 +142,10 @@ def runCode(sub: Submission, user: User) -> list:
                 writeFile(f"/tmp/{sub.id}/in0.txt", sub.custominput)    
             else:
                 for i in range(numTests):
-                    shutil.copyfile(f"/db/problems/{prob.id}/input/in{i}.txt", f"/tmp/{sub.id}/in{i}.txt")
+                    with open(f"/db/problems/{prob.id}/input/in{i}.txt") as in_file:
+                        data = in_file.read()
+                    with open(f"/tmp/{sub.id}/in{i}.txt", "w") as out_file:
+                        out_file.write(data.replace('\r', ''))
 
             # Output files will go here
             os.makedirs(f"/tmp/{sub.id}/out", exist_ok=True)
