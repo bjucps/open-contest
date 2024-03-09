@@ -41,17 +41,18 @@ start_usernum = 1
 for u in users:
     if u['type'] == participant_type:
         username = u['username']
-        if len(username) == 3:
+        try:
             usernum = int(username[1:])
-            if usernum > start_usernum:
+            if usernum >= start_usernum:
                 start_usernum = usernum + 1
+        except:
+            pass
 
 if len(sys.argv) == 4:
     num_users = int(sys.argv[3])
     userfullnames = [ f"{user_type}{start_usernum + i}" for i in range(num_users)]
 else:
     userfullnames = sys.stdin.readlines()
-
 
 for i in range(len(userfullnames)):
     usernum = start_usernum + i
