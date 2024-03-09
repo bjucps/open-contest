@@ -20,7 +20,7 @@ def copy_file(filename):
 
 if len(sys.argv) != 7:
     print('Usage: import_problem.py <db-dir> <source-problem-dir> <input-data-folder> <output-data-folder> <sample-prefix> <judge-prefix>')
-    print('\nExample: import_problem.py db 2024/Advising input_smaller output_smaller sample hidden')
+    print('\nExample: import_problem.py db 2024/Advising input output sample judge')
     sys.exit(1)
 
 db_dir = sys.argv[1]

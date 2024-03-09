@@ -72,4 +72,4 @@ OpenContest runs inside a Docker container and starts other containers on the ho
 ## Documentation
 
 * [User Manual](MANUAL.md)
-* [Development Guide](README-devsetup.md).]
+* [Development Guide](README-devsetup.md)
