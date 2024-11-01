@@ -1,6 +1,6 @@
-FROM python:3.8-buster
+FROM eclipse-temurin:23-noble
 RUN apt-get update 
-RUN apt-get install -y openjdk-11-jdk
+RUN apt-get install -y python3
 
 COPY java/main.py /main.py
 COPY runner.py /runner.py
