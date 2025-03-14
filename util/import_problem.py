@@ -62,13 +62,13 @@ else:
 num_samples = 0
 num_tests = 0
 
-for filename in os.listdir(os.path.join(source_dir, input_folder)):
+for filename in sorted(os.listdir(os.path.join(source_dir, input_folder))):
     if filename.startswith(sample_prefix):
         copy_file(filename)
         num_samples += 1
         num_tests += 1
 
-for filename in os.listdir(os.path.join(source_dir, input_folder)):
+for filename in sorted(os.listdir(os.path.join(source_dir, input_folder))):
     if filename.startswith(judge_prefix):
         copy_file(filename)
         num_tests += 1
