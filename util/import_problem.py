@@ -36,7 +36,7 @@ if not (os.path.isdir(source_dir) and os.path.isdir(os.path.join(source_dir, inp
 
 print(f"Importing {source_dir}...")
 problem_title = os.path.basename(source_dir)
-problem_dir_db = os.path.join(db_dir, "problems", problem_title)
+problem_dir_db = os.path.join(db_dir, "problems", f"prob-{problem_title}")
 problem_file = os.path.join(problem_dir_db, "problem.json")
 if os.path.isdir(problem_dir_db):
     print("Updating existing problem...")
@@ -48,7 +48,7 @@ else:
     os.makedirs(os.path.join(problem_dir_db, "output"))
     problem = {
         'id': f"prob-{problem_title}",
-        'title': problem_title,
+        'title': problem_title.replace("_", " "),
         "description": "",
         "statement": "",
         "input": "",
