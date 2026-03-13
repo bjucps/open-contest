@@ -1,4 +1,4 @@
-FROM python:3.12-bookworm
+FROM python:3.14
 RUN apt-get update 
 
 COPY python3/main.py /main.py

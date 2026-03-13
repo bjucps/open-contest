@@ -1,14 +1,15 @@
-FROM mono:latest
+FROM mcr.microsoft.com/dotnet/sdk:10.0
 
 RUN apt-get update && apt-get install -y python3
 
-# FROM python:3.7-stretch
-# RUN apt-get update && \
-#     apt-get -y install apt-transport-https dirmngr && \
-#     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
-#     echo "deb https://download.mono-project.com/repo/debian stable-stretch main" | tee /etc/apt/sources.list.d/mono-official-stable.list && \
-#     apt-get update && \
-#     apt-get -y install mono-vbnc
+# Note: The following creates a new console project in a folder named app
+# Then creates a soft link from the project's Program.cs file to the 
+# /source/code.cs file where the contestant's source is located at container runtime
+
+RUN dotnet new console --language VB -n app -o app \
+    && mkdir /source \
+    && mv /app/Program.vb /source/code.vb \
+    && ln -s /source/code.vb /app/Program.vb
 COPY vb/main.py /main.py
 COPY runner.py /runner.py
 ENTRYPOINT ["python3", "main.py"]

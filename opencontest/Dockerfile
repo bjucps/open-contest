@@ -10,7 +10,7 @@ FROM $USER/$OC_PROJECT_NAME-python3-runner
 FROM $USER/$OC_PROJECT_NAME-ruby-runner
 FROM $USER/$OC_PROJECT_NAME-vb-runner
 
-FROM python:3.8-buster
+FROM python:3.11
 RUN apt-get update 
 
 # Install dependencies.

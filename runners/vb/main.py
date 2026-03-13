@@ -4,7 +4,9 @@ import runner
 runner.runCode(
     int(sys.argv[1]),
     int(sys.argv[2]),
-    "vbnc code.vb",
-    "mono code.exe",
+    # Build the project in the /app folder
+    "dotnet build /app",
+    # Run the project in the /app folder
+    "dotnet run --project /app",
     True
 )

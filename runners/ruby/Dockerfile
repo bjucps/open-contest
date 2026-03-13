@@ -1,6 +1,5 @@
-FROM python:3.8-buster
-RUN apt-get update 
-RUN apt-get install -y ruby
+FROM python:3.14
+RUN apt-get update && apt-get install -y ruby
 
 COPY ruby/main.py /main.py
 COPY runner.py /runner.py
